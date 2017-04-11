@@ -1,69 +1,69 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+    <head>
 
-	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">
-    <meta name="format-detection" content="telephone=no">
-	<meta name="msapplication-tap-highlight" content="no">
-	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-	<link rel="stylesheet" type="text/css" href="css/index.css">
-	<link rel="stylesheet" type="text/css" href="js/jquery-1.5.0.mobile.min.css">
-	<style>
-		/* For avoiding title truncation in wp8 */
-		
-		.ui-header .ui-title {
-			overflow: visible !important;
-		}
-		/* For fixing the absolute position issue for the default cordova gen page*/
-		
-		#cjp-accordion1 .app {
-			left: 5px !important;
-			margin: 5px !important;
-			position: relative !important;
-		}
-	</style>
-	<title>Pet Match</title>
-</head>
+        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="js/jquery-1.5.0.mobile.min.css">
+        <style>
+            /* For avoiding title truncation in wp8 */
 
-<body>
-	<div data-role="page">
-		<div data-role="header" data-theme="c" data-position="fixed">
-			<h1>Pet Match</h1>
-		</div>
-		<!-- /header -->
-		<div role="main" class="ui-content" id="page-signin">
-			<h3>Acessar</h3>
-			<div id="ctn-err" class="bi-invisible"></div>
-			<label for="txt-email-address">Email</label>
-			<input type="text" name="txt-email-address" id="txt-email-address" value="">
-			<label for="txt-password">Senha</label>
-			<input type="password" name="txt-password" id="txt-password" value="">
-			<fieldset data-role="controlgroup">
-				<label><input type="checkbox" name="chk-keep-signed-in" id="chk-keep-signed-in">Permanecer logado</label>
-			</fieldset>
-			<a href="main.html" id="btn-submit" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5">
-				Entrar
-			</a>
-			<p class="mc-top-margin-1-5">
-				<a href="#begin-password-reset-page">N&#xE3;o tem acesso?</a>
-			</p>
-            <center>
-                <br>
-                <b>Powered by</b>
-                <br>
-                <img src="img/morettic.png" width="120">
-            </center>
-		</div>
-		<div id="page1" style="display:none">
+            .ui-header .ui-title {
+                overflow: visible !important;
+            }
+            /* For fixing the absolute position issue for the default cordova gen page*/
 
-		</div>
-	</div>
-	<script type="text/javascript" src="cordova.js"></script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
-	<script type="text/javascript" src="js/jquery-1.5.0.mobile.min.js"></script>
-	<script type="text/javascript" src="js/index.js"></script>
+            #cjp-accordion1 .app {
+                left: 5px !important;
+                margin: 5px !important;
+                position: relative !important;
+            }
+        </style>
+        <title>Pet Match</title>
+    </head>
 
-</body>
+    <body>
+        <div data-role="page">
+            <div data-role="header" data-theme="c" data-position="fixed">
+                <h1>Pet Match</h1>
+            </div>
+            <!-- /header -->
+            <div role="main" class="ui-content" id="page-signin">
+                <h3>Acessar</h3>
+                <div id="ctn-err" class="bi-invisible"></div>
+                <label for="txt-email-address">Email</label>
+                <input type="text" name="txt-email-address" id="txt-email-address" value="">
+                <label for="txt-password">Senha</label>
+                <input type="password" name="txt-password" id="txt-password" value="">
+                <fieldset data-role="controlgroup">
+                    <label><input type="checkbox" name="chk-keep-signed-in" id="chk-keep-signed-in">Permanecer logado</label>
+                </fieldset>
+                <a href="main.html" id="btn-submit" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5">
+                    Entrar
+                </a>
+                <p class="mc-top-margin-1-5">
+                    <a href="#begin-password-reset-page">N&#xE3;o tem acesso?</a>
+                </p>
+                <center>
+                    <br>
+                    <b>Powered by</b>
+                    <br>
+                    <img src="img/morettic.png" width="120">
+                </center>
+            </div>
+            <div id="page1" style="display:none">
+
+            </div>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
+        <script type="text/javascript" src="js/jquery-1.5.0.mobile.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+
+    </body>
 
 </html>
