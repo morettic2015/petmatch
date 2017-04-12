@@ -48,3 +48,30 @@ var app = {
 };
 
 app.initialize();
+
+
+function loginGoogle() {
+    window.plugins.googleplus.login(
+        {
+            scopes: 'profile email', // optional, space-separated(!) list of scopes, If not included or empty, defaults to 'profile email'.
+            webClientId: '45315661768-umuoma1q6a4ghk9eodn5rvb34c2tsl8e.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+            offline: true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+        },
+        function (obj) {
+            alert(JSON.stringify(obj)); // do something useful instead of alerting
+            /* contains:
+             obj.email          // 'eddyverbruggen@gmail.com'
+             obj.userId         // user id
+             obj.displayName    // 'Eddy Verbruggen'
+             obj.familyName     // 'Verbruggen'
+             obj.givenName      // 'Eddy'
+             obj.imageUrl       // 'http://link-to-my-profilepic.google.com'
+             obj.idToken        // idToken that can be exchanged to verify user identity.
+             obj.serverAuthCode // Auth code that can be exchanged for an access token and refresh token for offline access
+            */
+        },
+        function (msg) {
+            alert('error: ' + msg);
+        }
+    );
+}
