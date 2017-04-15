@@ -16,8 +16,10 @@
     <body>
         <!-- jquery mobile page 1 -->
         <div data-role="page" id="page1">
-            <div data-role="header" data-theme="c" data-position="fixed">
-                <h1>petmatch.com.br</h1>
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <center>
+                    <img src="img/logo_pet_b.png" width="100">
+                </center>
             </div>
             <!-- /header -->
             <!--
@@ -25,7 +27,7 @@
             -->
             <div role="main" class="ui-content" id="page-signin">
                 <center>
-                    <img src="img/logo_pet.png" width="120">
+
                     <h3>Acessar</h3>
                 </center>
 
@@ -39,13 +41,13 @@
                 </fieldset>
 
 
-                <a href="#page2" id="btn-submit" class="ui-btn ui-btn-b ui-corner-all">
+                <a href="#page2" id="btn-submit" class="ui-btn ui-btn-b ui-corner-all"  style=" background: #00a599;">
                     Entrar
                 </a>
-                <a href="javascript:loginGoogle()" id="btn-google" class="ui-btn ui-btn-b ui-corner-all" onclick="loginGoogle()">
+                <a href="javascript:loginGoogle()" id="btn-google" class="ui-btn ui-btn-b ui-corner-all" onclick="loginGoogle()"  style=" background: #d74633;">
                     Entrar com o Google
                 </a>
-                <a href="javascript:loginGoogle()" id="btn-google" class="ui-btn ui-btn-b ui-corner-all " onclick="loginGoogle()">
+                <a href="javascript:loginGoogle()" id="btn-google" class="ui-btn ui-btn-b ui-corner-all " onclick="loginGoogle()"  style=" background: #3b5999;">
                     Entrar com o Facebook
                 </a>
                 <p class="mc-top-margin-1-5">
@@ -60,17 +62,135 @@
             </div>
         </div>
         <!-- end page 1 -->
+        <!-- Tela de mensagens -->
+        <div  data-role="page" id="jpopLMensagem">
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <a href="#page2" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <center><img src="img/logo_pet_b.png" width="100"></center>
+            </div>
+            <div role="main" class="ui-content">
+                <ul data-role="listview" data-inset="true">
+                    <li data-role="divider">Mensagens</li>
+                    <li>
+                        <a href="#">
+                            <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
+                            <h2>Mauro</h2>
+                            <p>asldkjsdlfjsdlfa.</p>
+                        </a>
+                        <a href="#jpopMensagem" data-rel="popup" data-transition="pop">Enviar Mensagem</a>
+                    </li>
+                </ul>
+                <div data-role="popup" id="jpopMensagem">
+                    <div data-role="main" class="ui-content">
+                        <ul data-role="listview" data-inset="true">
+                            <li>
+                                <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
+                                <h2>Mauro</h2>
+                                <p>asldkjsdlfjsdlfa.</p>
+                            </li>
+                            <li>
+                                <img src="img/logo.png" style="border-radius: 50%;border-radius:1px" width="180">
+                                <h2>Ser</h2>
+                                <p>asldkjsdlfjsdlfa.</p>
+                            </li>
+                            <li>
+                                <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
+                                <h2>Mauro</h2>
+                                <p>asldkjsdlfjsdlfa.</p>
+                            </li>
+                            <li>
+                                <img src="img/logo.png" style="border-radius: 50%;border-radius:1px" width="180">
+                                <h2>ser</h2>
+                                <p>asldkjsdlfjsdlfa.</p>
+                            </li>
+                        </ul>
+                        <h3>Envie sua mensagem</h3>
+                        <p><textarea></textarea></p>
+                        <a href="#pageone" style=" background: #00a599;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">Enviar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- pagina perfil -->
+
+        <div  data-role="page" id="jpopPerfil" >
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <a href="#page2" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <center><img src="img/logo_pet_b.png" width="100"></center>
+            </div>
+            <div data-role="main" class="ui-content">
+                <h3>Edital Perfil</h3>
+                <center>
+                    <img src="img/morettic.png" width="80" height="80" style="border-radius: 50%;border-radius:1px" />
+                </center>
+
+                <div id="ctn-err" class="bi-invisible"></div>
+                <label for="txt-nome">Nome</label>
+                <input type="text" name="txt-nome" id="txt-nome" value="">
+                <label for="txt-email-email1">Email</label>
+                <input type="email" name="txt-email1" id="txt-email1" value="">
+                <label for="txt-fone">Telefone</label>
+                <input type="tel" name="txt-fone" id="txt-fone" value="">
+                <label for="txt-cep">Cep</label>
+                <input type="number" name="txt-cep" id="txt-cep" value="">
+                <label for="txt-password1">Senha</label>
+                <input type="password" name="txt-password1" id="txt-password1" value="">
+                <a href="#" id="btn-google" class="ui-btn ui-btn-b ui-corner-all" style=" background: #00a599;">
+                    Salvar
+                </a>
+            </div>
+        </div>
+        <!-- pagina de cadastro do pet-->
+
+        <div  data-role="page"  id="jpopCadastrarPet" >
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <a href="#page2" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <center><img src="img/logo_pet_b.png" width="100"></center>
+            </div>
+            <div data-role="main" class="ui-content">
+                <h3>Cadastrar para adoção</h3>
+
+                <div id="ctn-err" class="bi-invisible"></div>
+                <label for="txt-tipo">Espécie</label>
+                <select name="txt-tipo" id="txt-tipo">
+                    <option>Cão</option>
+                    <option>Gato</option>
+                </select>
+                <label for="txt-tit">Titulo</label>
+                <input type="text" name="txt-tit" id="txt-tit" value="">
+                <label for="txt-idade">Idade (meses)</label>
+                <input type="number" name="txt-idade" id="txt-idade" value="">
+                <label for="txt-sexo">Sexo</label>
+                <select name="txt-sexo" id="txt-sexo">
+                    <option>Macho</option>
+                    <option>Fêmea</option>
+                </select>
+                <label>Vacinado <input type="checkbox"></label>
+                <label>Castrado <input type="checkbox"></label>
+                <label for="txt-fone">Descriçao</label>
+                <textarea></textarea>
+                <a href="#" id="btn-attatch" class="ui-btn ui-btn-b ui-btn ui-corner-all"  style="background: #00a599;">
+                    Anexar foto
+                </a>
+
+                <a href="#" id="btn-google" class="ui-btn ui-btn-b ui-corner-all"  style=" background: #00a599;">
+                    Salvar
+                </a>
+            </div>
+        </div>
         <!--
                @pagina de de pets
         -->
         <!-- jquery mobile page 2 -->
         <div data-role="page" id="page2">
-            <div data-role="header" data-theme="c" data-position="fixed" style="background:#f1f1f1">
-                <a href="#nav-panel" class="ui-btn ui-icon-bars ui-btn-icon-notext">Icon only</a>
-                <center><img src="img/logopetmatchrosa.png" width="100"></center>
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <a href="#nav-panel" class="ui-btn ui-icon-bars ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <center><img src="img/logo_pet_b.png" width="100"></center>
             </div>
             <div data-role="panel" id="nav-panel" style="background:#f1f1f1">
                 <!-- panel content goes here -->
+                <p>
+                    <br>
                 <center>
                     <img src="img/morettic.png" width="80" height="80" style="border-radius: 50%;border-radius:1px" />
                     <br>
@@ -78,12 +198,13 @@
 
                     <h4>email@mail.o</h4>
                     <ul data-role="listview">
-                        <li><a href="#jpopPerfil" data-rel="popup" data-transition="pop">Meu Perfil</a></li>
-                        <li><a href="#jpopPerfil" data-rel="popup" data-transition="pop">Cadastrar Pet</a></li>
-                        <li><a href="#jpopPerfil" data-rel="popup" data-transition="pop">Mensagens</a></li>
+                        <li><a href="#jpopPerfil">Meu Perfil</a></li>
+                        <li><a href="#jpopCadastrarPet">Cadastrar Pet</a></li>
+                        <li><a href="#jpopLMensagem">Mensagens</a></li>
                         <li><a href="#jpopPerfil" data-rel="popup" data-transition="pop">Copyright</a></li>
                     </ul>
                 </center>
+                </p>
             </div>
             <!-- /panel -->
             <!-- /header -->
@@ -164,36 +285,15 @@
                     </li>
                 </ul>
                 <!-- POP UPS -->
-                <div data-role="popup" id="jpopPerfil"  data-overlay-theme="b" data-theme="a" data-dismissible="false" >
-                    <div data-role="main" class="ui-content">
-                        <h3>Edital Perfil</h3>
-                        <center>
-                            <img src="img/morettic.png" width="80" height="80" style="border-radius: 50%;border-radius:1px" />
-                        </center>
 
-                        <div id="ctn-err" class="bi-invisible"></div>
-                        <label for="txt-nome">Nome</label>
-                        <input type="text" name="txt-nome" id="txt-nome" value="">
-                        <label for="txt-email-email1">Email</label>
-                        <input type="email" name="txt-email1" id="txt-email1" value="">
-                        <label for="txt-fone">Telefone</label>
-                        <input type="tel" name="txt-fone" id="txt-fone" value="">
-                        <label for="txt-cep">Cep</label>
-                        <input type="number" name="txt-cep" id="txt-cep" value="">
-                        <label for="txt-password1">Senha</label>
-                        <input type="password" name="txt-password1" id="txt-password1" value="">
-                        <a href="#" id="btn-google" class="ui-btn ui-btn-b ui-corner-all">
-                            Salvar
-                        </a>
-                    </div>
-                </div>
+                <!-- @PopUp Cadastrar PEt-->
+
                 <div data-role="popup" id="jpop">
                     <div data-role="main" class="ui-content">
                         <img src="img/pitbull.jpg" width="300">
                         <h3>Pit Bixa porra</h3>
                         <p>The buttons below are for demonstration purposes only.</p>
-                        <a href="#pageone" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">Adotar</a>
-                        <a href="#pageone" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline">Fechar</a>
+                        <a  style=" background: #ea4f70;" href="#jpopMensagem" data-rel="popup" data-transition="pop" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-heart ui-btn-icon-left ui-btn-inline ui-mini">Quero Adotar</a>
                     </div>
                 </div>
             </div>

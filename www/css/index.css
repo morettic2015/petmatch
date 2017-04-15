@@ -125,3 +125,8 @@ h1 {
     margin: 5px !important;
     position: relative !important;
 }
+
+
+.ui-btn{
+    background: #00a599;
+}
