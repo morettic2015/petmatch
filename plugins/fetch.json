@@ -7,13 +7,15 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-googleplus": {
+    "cordova-plugin-facebook4": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/Telerik-Verified-Plugins/Google-Sign-In",
-            "subdir": "."
+            "type": "registry",
+            "id": "cordova-plugin-facebook4"
         },
         "is_top_level": true,
-        "variables": {}
+        "variables": {
+            "APP_ID": "435098223494007",
+            "APP_NAME": "petmatchfinder"
+        }
     }
 }

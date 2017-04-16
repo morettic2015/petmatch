@@ -10,7 +10,9 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
-        "cordova-plugin-googleplus": {
+        "cordova-plugin-facebook4": {
+            "APP_ID": "435098223494007",
+            "APP_NAME": "petmatchfinder",
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     },
