@@ -27,10 +27,7 @@ var app = {
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
-        document.getElementById('btn-submit').onclick = function() {
-            document.getElementById('page1').style.display = 'block';
-            document.getElementById('page-signin').style.display = 'none';
-        }
+        $("input").textinput();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -70,24 +67,116 @@ function loginGoogle() {
             }
     );
 }
-
+var resposta = null;
 function loginFacebook() {
     var fbLoginSuccess = function(userData) {
-        alert("UserInfo: " + JSON.stringify(userData));
+        //alert("UserInfo: " + JSON.stringify(userData));
         //me?fields=id,name,email
         facebookConnectPlugin.api(
                 "me/?fields=id,name,email,picture", // graph path
                 [], // array of additional permissions
                 function(response) {
                     if (response.error) {
-                        alert("Uh-oh! " + JSON.stringify(response.error));
+                        alert("Não foi possível autorizar sua conta no Facebook" + JSON.stringify(response.error));
                     } else {
-                        alert(JSON.stringify(response));
+                        resposta = response;
+                        //alert(JSON.stringify(response));
+                        window.location = "#page2";
+                        $("#nmEmail").html(resposta.email);
+                        $("#nmProfile").html(resposta.name);
+                        //alert(resposta.picture.data.url)
+                        $("#nmAvatar").attr("src", resposta.picture.data.url);
+                        $("#nmAvatar").attr("style", "border-radius: 50%;");
+
+                        localStorage.setItem("profile", JSON.stringify(resposta));
+                        //alert(resposta.email);
+                        //document.getElementById("").innerHTML = ;
+                        //document.getElementById("nmProfile").innerHTML = resposta.name;
+                        //document.getElementById("nmAvatar").src = ;
+
                     }
                 });
     }
 
     facebookConnectPlugin.login(["public_profile", "email"], fbLoginSuccess, function(error) {
         alert("" + error)
+    });
+}
+
+function setProfile() {
+    //alert('LOL')
+    window.location = "#jpopPerfil";
+    resposta = getProfile();
+    $("#txt-nome").val(resposta.name);
+    $("#txt-email1").val(resposta.email);
+    $("#txt-fone").val(resposta.fone);
+    $("#txt-cep").val(resposta.cep);
+    $("#txt-password1").val(resposta.pass);
+    $("#txt-avatar").attr("src", resposta.picture == undefined ? resposta.url : resposta.picture.data.url);
+    $("#txt-avatar").attr("style", "border-radius: 50%;");
+}
+
+
+function getProfile() {
+    var p = null;
+    if (localStorage.getItem("profile") != null) {
+        p = JSON.parse(localStorage.getItem("profile"));
+    }
+    return p;
+}
+
+function saveProfile() {
+    perfil = getProfile();
+    perfil.name = $("#txt-nome").val();
+    perfil.email = $("#txt-email1").val();
+    perfil.cep = $("#txt-cep").val();
+    perfil.pass = $("#txt-password1").val();
+    perfil.fone = $("#txt-fone").val();
+
+    alert(perfil.cep);
+    if (perfil.name == "" || perfil.email == "" || perfil.cep == "" || perfil.pass == "" || perfil.fone == "") {
+        alert('Verifique seus dados!');
+    } else {
+        localStorage.setItem("profile", JSON.stringify(perfil));
+        alert('Perfil atualizado com sucesso');
+    }
+}
+
+function login() {
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=37&email=" + $("#txt-email-address").val() + "&name=null&pass=" + $("#txt-password").val()
+    $.ajax({
+        url: postTo,
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'SIGNIN',
+        success: function(data) {
+
+            if (data.in) {
+                resposta = new Object();
+                resposta.id = data.id;
+                resposta.name = data.name;
+                resposta.email = data.email;
+                resposta.url = "img/avatar.png";
+                window.location = "#page2";
+
+                $("#nmEmail").html(resposta.email);
+                $("#nmProfile").html(resposta.name);
+                //alert(resposta.picture.data.url)
+                $("#nmAvatar").attr("src", resposta.url);
+                $("#nmAvatar").attr("style", "border-radius: 50%;");
+
+                localStorage.setItem("profile", JSON.stringify(resposta));
+            } else {
+                alert("Ops...Usuário ou senha inválidos");
+            }
+            alert(JSON.stringify(data));
+        }
+    });
+}
+
+function filePicker() {
+    fileChooser.open(function(uri) {
+        alert(uri);
     });
 }

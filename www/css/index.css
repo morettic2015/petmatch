@@ -130,3 +130,7 @@ h1 {
 .ui-btn{
     background: #00a599;
 }
+
+.spacerBottom{
+    margin-bottom: 200px;
+}

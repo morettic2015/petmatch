@@ -17,5 +17,22 @@
             "APP_ID": "435098223494007",
             "APP_NAME": "petmatchfinder"
         }
+    },
+    "com.megster.cordova.FileChooser": {
+        "source": {
+            "type": "git",
+            "url": "http://github.com/don/cordova-filechooser.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-filepath": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-filepath"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

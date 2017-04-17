@@ -14,6 +14,12 @@
             "APP_ID": "435098223494007",
             "APP_NAME": "petmatchfinder",
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "com.megster.cordova.FileChooser": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-plugin-filepath": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     },
     "dependent_plugins": {}
