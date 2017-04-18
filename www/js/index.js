@@ -6,7 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ *https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=38&email=MALACMA@GMAIL.COM&name=Lam%20Mxrettx&pass=66da9b5f&id=10210293740438879&cep=4004&cpf=02522214525&rua=Jornalista%20CAPIVARA&fone=8888888&complemento=apto123
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
@@ -28,6 +28,18 @@ var app = {
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
         $("input").textinput();
+        var mProf = getProfile();
+        if (mProf != null) {
+            mProf.img = "img/avatar.png";
+            //alert(JSON.stringify(response));
+            window.location = "#page2";
+            $("#nmEmail").html(mProf.email);
+            $("#nmProfile").html(mProf.name);
+            //alert(resposta.picture.data.url)
+            $("#nmAvatar").attr("src", mProf.picture == undefined ? mProf.img : mProf.picture.data.url);
+            $("#nmAvatar").attr("style", "border-radius: 50%;");
+
+        }
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -76,23 +88,50 @@ function loginFacebook() {
                 "me/?fields=id,name,email,picture", // graph path
                 [], // array of additional permissions
                 function(response) {
+                    resposta = response;
                     if (response.error) {
                         alert("Não foi possível autorizar sua conta no Facebook" + JSON.stringify(response.error));
                     } else {
-                        resposta = response;
-                        //alert(JSON.stringify(response));
-                        window.location = "#page2";
-                        $("#nmEmail").html(resposta.email);
-                        $("#nmProfile").html(resposta.name);
-                        //alert(resposta.picture.data.url)
-                        $("#nmAvatar").attr("src", resposta.picture.data.url);
-                        $("#nmAvatar").attr("style", "border-radius: 50%;");
 
-                        localStorage.setItem("profile", JSON.stringify(resposta));
                         //alert(resposta.email);
                         //document.getElementById("").innerHTML = ;
                         //document.getElementById("nmProfile").innerHTML = resposta.name;
                         //document.getElementById("nmAvatar").src = ;
+                        var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=37&email="
+                                + resposta.email
+                                + "&name="
+                                + resposta.name
+                                //+ "&pass="
+                                //+ $("#txt-password").val()
+                                + "&id="
+                                + resposta.id
+                        $.ajax({
+                            url: postTo,
+                            dataType: "jsonp",
+                            method: "GET",
+                            jsonp: 'callback',
+                            jsonpCallback: 'SIGNIN',
+                            success: function(data) {
+
+                                if (data.in) {
+
+                                    //alert(JSON.stringify(response));
+                                    window.location = "#page2";
+                                    $("#nmEmail").html(resposta.email);
+                                    $("#nmProfile").html(resposta.name);
+                                    //alert(resposta.picture.data.url)
+                                    $("#nmAvatar").attr("src", resposta.picture.data.url);
+                                    $("#nmAvatar").attr("style", "border-radius: 50%;");
+
+                                    localStorage.setItem("profile", JSON.stringify(resposta));
+
+
+                                } else {
+                                    alert("Ops...Usuário ou senha inválidos");
+                                }
+                                alert(JSON.stringify(data));
+                            }
+                        });
 
                     }
                 });
