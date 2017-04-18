@@ -20,7 +20,14 @@
         },
         "cordova-plugin-filepath": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        }
+    }
 }

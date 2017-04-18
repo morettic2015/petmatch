@@ -38,7 +38,30 @@ var app = {
             //alert(resposta.picture.data.url)
             $("#nmAvatar").attr("src", mProf.picture == undefined ? mProf.img : mProf.picture.data.url);
             $("#nmAvatar").attr("style", "border-radius: 50%;");
+            /**
+             *
+             *  @ Geolocate user device
+             *
+             * */
+            var onSuccess = function(position) {
+                alert('Latitude: ' + position.coords.latitude + '\n' +
+                        'Longitude: ' + position.coords.longitude + '\n' +
+                        'Altitude: ' + position.coords.altitude + '\n' +
+                        'Accuracy: ' + position.coords.accuracy + '\n' +
+                        'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
+                        'Heading: ' + position.coords.heading + '\n' +
+                        'Speed: ' + position.coords.speed + '\n' +
+                        'Timestamp: ' + position.timestamp + '\n');
+            };
 
+            // onError Callback receives a PositionError object
+            //
+            function onError(error) {
+                alert('code: ' + error.code + '\n' +
+                        'message: ' + error.message + '\n');
+            }
+
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
         }
     },
     // Update DOM on a Received Event
@@ -92,17 +115,10 @@ function loginFacebook() {
                     if (response.error) {
                         alert("Não foi possível autorizar sua conta no Facebook" + JSON.stringify(response.error));
                     } else {
-
-                        //alert(resposta.email);
-                        //document.getElementById("").innerHTML = ;
-                        //document.getElementById("nmProfile").innerHTML = resposta.name;
-                        //document.getElementById("nmAvatar").src = ;
                         var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=37&email="
                                 + resposta.email
                                 + "&name="
                                 + resposta.name
-                                //+ "&pass="
-                                //+ $("#txt-password").val()
                                 + "&id="
                                 + resposta.id
                         $.ajax({
@@ -112,20 +128,14 @@ function loginFacebook() {
                             jsonp: 'callback',
                             jsonpCallback: 'SIGNIN',
                             success: function(data) {
-
                                 if (data.in) {
-
-                                    //alert(JSON.stringify(response));
                                     window.location = "#page2";
                                     $("#nmEmail").html(resposta.email);
                                     $("#nmProfile").html(resposta.name);
-                                    //alert(resposta.picture.data.url)
                                     $("#nmAvatar").attr("src", resposta.picture.data.url);
                                     $("#nmAvatar").attr("style", "border-radius: 50%;");
 
                                     localStorage.setItem("profile", JSON.stringify(resposta));
-
-
                                 } else {
                                     alert("Ops...Usuário ou senha inválidos");
                                 }
@@ -141,7 +151,9 @@ function loginFacebook() {
         alert("" + error)
     });
 }
-
+/**
+ *  @ Load profile from Local memory an then set properties n form
+ * */
 function setProfile() {
     //alert('LOL')
     window.location = "#jpopPerfil";
@@ -150,12 +162,19 @@ function setProfile() {
     $("#txt-email1").val(resposta.email);
     $("#txt-fone").val(resposta.fone);
     $("#txt-cep").val(resposta.cep);
+    $("#txt-password1").val(resposta.cep);
+    $("#txt-fone").val(resposta.fone);
+    $("#txt-rua").val(resposta.rua);
+    $("#txt-comp").val(resposta.comp);
+    $("#txt-doc").val(resposta.doc);
     $("#txt-password1").val(resposta.pass);
     $("#txt-avatar").attr("src", resposta.picture == undefined ? resposta.url : resposta.picture.data.url);
     $("#txt-avatar").attr("style", "border-radius: 50%;");
 }
 
-
+/**
+ * @ Return the profime from memory local
+ * */
 function getProfile() {
     var p = null;
     if (localStorage.getItem("profile") != null) {
@@ -171,13 +190,49 @@ function saveProfile() {
     perfil.cep = $("#txt-cep").val();
     perfil.pass = $("#txt-password1").val();
     perfil.fone = $("#txt-fone").val();
+    perfil.rua = $("#txt-rua").val();
+    perfil.comp = $("#txt-comp").val();
+    perfil.doc = $("#txt-doc").val();
 
-    alert(perfil.cep);
-    if (perfil.name == "" || perfil.email == "" || perfil.cep == "" || perfil.pass == "" || perfil.fone == "") {
+    if (perfil.name == "" ||
+            perfil.email == "" ||
+            perfil.cep == "" ||
+            perfil.pass == "" ||
+            perfil.doc == "" ||
+            perfil.fone == "" ||
+            perfil.comp == "" ||
+            perfil.rua == "") {
         alert('Verifique seus dados!');
-    } else {
-        localStorage.setItem("profile", JSON.stringify(perfil));
-        alert('Perfil atualizado com sucesso');
+    } else {//Save profile
+        //localStorage.setItem("profile", JSON.stringify(perfil));
+        postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=38&"
+                + "email=" + $("#txt-email1").val()
+                + "&name=" + perfil.email
+                + "&pass=" + $("#txt-password1").val()
+                + "&id=" + perfil.id
+                + "&cep=" + $("#txt-cep").val()
+                + "&cpf=" + $("#txt-doc").val()
+                + "&rua=" + $("#txt-rua").val()
+                + "&fone=" + $("#txt-fone").val()
+                + "&complemento=" + $("#txt-comp").val()
+        $.ajax({
+            url: postTo,
+            dataType: "jsonp",
+            method: "GET",
+            jsonp: 'callback',
+            jsonpCallback: 'UPDATE_PROFILE',
+            success: function(data) {
+                ;
+                perfil.state = data.addrs[0].state;
+                perfil.country = data.addrs[0].country;
+                perfil.city = data.addrs[0].city;
+
+                localStorage.setItem("profile", JSON.stringify(perfil));
+
+                alert("Dados atualizados com sucesso!");
+            }
+        });
+
     }
 }
 
