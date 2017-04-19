@@ -27,7 +27,10 @@ var app = {
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
+
         $("input").textinput();
+
+        //Recover profile from previous session
         var mProf = getProfile();
         if (mProf != null) {
             mProf.img = "img/avatar.png";
@@ -41,17 +44,10 @@ var app = {
             /**
              *
              *  @ Geolocate user device
-             *
+             *  @ Save lat lon when open APP
              * */
             var onSuccess = function(position) {
-                alert('Latitude: ' + position.coords.latitude + '\n' +
-                        'Longitude: ' + position.coords.longitude + '\n' +
-                        'Altitude: ' + position.coords.altitude + '\n' +
-                        'Accuracy: ' + position.coords.accuracy + '\n' +
-                        'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
-                        'Heading: ' + position.coords.heading + '\n' +
-                        'Speed: ' + position.coords.speed + '\n' +
-                        'Timestamp: ' + position.timestamp + '\n');
+                localStorage.setItem("position", JSON.stringify(position));
             };
 
             // onError Callback receives a PositionError object
@@ -60,8 +56,41 @@ var app = {
                 alert('code: ' + error.code + '\n' +
                         'message: ' + error.message + '\n');
             }
-
+            //INit geolocation
             navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+            /**
+             * @Push Notifications enabled
+             * */
+            var notificationOpenedCallback = function(jsonData) {
+                console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+            };
+
+            window.plugins.OneSignal
+                    .startInit("cb2da5f1-6c1e-4692-814e-01fd3c11b10d")
+                    .handleNotificationOpened(notificationOpenedCallback)
+                    .endInit();
+            //User id to register
+            window.plugins.OneSignal.getIds(function(ids) {
+                //console.log('getIds: ' + JSON.stringify(ids));
+                //alert("userId = " + ids.userId + ", pushToken = " + ids.pushToken);
+                var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=39&id="
+                        + mProf.id
+                        + "&token="
+                        + ids.pushToken
+                        + "&one="
+                        + ids.userId;
+                $.ajax({
+                    url: postTo,
+                    dataType: "jsonp",
+                    method: "GET",
+                    jsonp: 'callback',
+                    jsonpCallback: 'PUSH_REGISTER',
+                    success: function(data) {
+                        localStorage.setItem("push", JSON.stringify(data));
+                    }
+                });
+            });
         }
     },
     // Update DOM on a Received Event
@@ -102,6 +131,9 @@ function loginGoogle() {
             }
     );
 }
+/**
+ * @Facebook login and settings on Main Screen
+ * */
 var resposta = null;
 function loginFacebook() {
     var fbLoginSuccess = function(userData) {
@@ -146,7 +178,9 @@ function loginFacebook() {
                     }
                 });
     }
-
+    /**
+     *  @Facebook Permissions
+     * */
     facebookConnectPlugin.login(["public_profile", "email"], fbLoginSuccess, function(error) {
         alert("" + error)
     });
@@ -232,10 +266,11 @@ function saveProfile() {
                 alert("Dados atualizados com sucesso!");
             }
         });
-
     }
 }
-
+/**
+ * @Normal Login
+ * */
 function login() {
     var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=37&email=" + $("#txt-email-address").val() + "&name=null&pass=" + $("#txt-password").val()
     $.ajax({
@@ -270,7 +305,111 @@ function login() {
 }
 
 function filePicker() {
-    fileChooser.open(function(uri) {
-        alert(uri);
+    /*fileChooser.open(function(uri) {
+     alert(uri);
+     });*/
+    imagePicker.getPictures(
+            function(result) {
+                var content = "";
+                for (var i = 0; i < result.length; i++) {
+                    alert(result[i]); //<a href="#" class="thumbnail"><img src="img.jpg" /></a>
+                    content += '<img onclick="filePicker()"  src="' + result[i] + '" style="max-width:100%"/>';
+                    localStorage.setItem("petAvatar", result[i]);
+                    uploadFile(result[i]);
+                }
+
+                document.getElementById('div_pic').innerHTML = content;
+            }, // success handler
+            function(errmsg) {
+                alert('Ocorreu um erro ao anexar sua imagem. Tente outra vez!...' + errmsg)
+                console.log("ohoh.. " + errmsg);
+            },
+            {// options object, all optional
+                maximumImagesCount: 1, // Android only since plugin version 2.1.1, default no limit
+                quality: 20, // 0-100, default 100 which is highest quality
+                width: 300, // proportionally rescale image to this width, default no rescale
+                height: 300, // same for height
+                outputType: imagePicker.OutputType.FILE_URI // default .FILE_URI
+            });
+}
+
+//////Save pet
+
+function savePet() {
+    $.ajax({
+        url: "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=40",
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'UPLOAD_PATH',
+        success: function(data) {
+            if (data.in) {
+                resposta = new Object();
+                resposta.id = data.id;
+                resposta.name = data.name;
+                resposta.email = data.email;
+                resposta.url = "img/avatar.png";
+                window.location = "#page2";
+
+                $("#nmEmail").html(resposta.email);
+                $("#nmProfile").html(resposta.name);
+                //alert(resposta.picture.data.url)
+                $("#nmAvatar").attr("src", resposta.url);
+                $("#nmAvatar").attr("style", "border-radius: 50%;");
+
+                localStorage.setItem("profile", JSON.stringify(resposta));
+            } else {
+                alert("Ops...Usuário ou senha inválidos");
+            }
+            alert(JSON.stringify(data));
+        }
+    });
+}
+
+
+/**
+ *  @Funtion to upload Files
+ *
+ * */
+function uploadFile(filePath) {
+    $.ajax({
+        url: "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=40",
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'UPLOAD_PATH',
+        success: function(data) {
+            alert(JSON.stringify(data));
+            var fileURL = filePath;
+            var uri = encodeURI(data.uploadPath);
+            var options = new FileUploadOptions();
+            alert(fileURL);
+            try {
+                options.fileKey = "myFile";
+                options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+                options.mimeType = "image/jpeg";
+
+                var headers = {'pet_match_pic': fileURL, 'url': data.uploadPath, 'by': 'www.morettic.com.br'};
+                options.headers = headers;
+
+                var ft = new FileTransfer();
+
+                ft.upload(fileURL, uri,
+                        function(r) {
+                            alert("Code = " + r.responseCode);
+                            alert("Response = " + r.response);
+                            alert("Sent = " + r.bytesSent);
+                        },
+                        function(error) {
+                            alert("An error has occurred: Code = " + error.code);
+                            alert("upload error source " + error.source);
+                            alert("upload error target " + error.target);
+                        },
+                        options
+                        );
+            } catch (e) {
+                alert(e);
+            }
+        }
     });
 }
