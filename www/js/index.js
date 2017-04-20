@@ -46,18 +46,20 @@ var app = {
              *  @ Geolocate user device
              *  @ Save lat lon when open APP
              * */
-            var onSuccess = function(position) {
-                localStorage.setItem("position", JSON.stringify(position));
-            };
 
-            // onError Callback receives a PositionError object
-            //
-            function onError(error) {
-                alert('code: ' + error.code + '\n' +
-                        'message: ' + error.message + '\n');
-            }
             //INit geolocation
-            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+            setTimeout(function() {
+                navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            localStorage.setItem("lat", position.coords.latitude);
+                            localStorage.setItem("lon", position.coords.longitude);
+                        },
+                        function(error) {
+                            alert('code: ' + error.code + '\n' +
+                                    'message: ' + error.message + '\n');
+                            alert(JSON.stringify(error));
+                        });
+            }, 500);
 
             /**
              * @Push Notifications enabled
@@ -70,27 +72,29 @@ var app = {
                     .startInit("cb2da5f1-6c1e-4692-814e-01fd3c11b10d")
                     .handleNotificationOpened(notificationOpenedCallback)
                     .endInit();
-            //User id to register
-            window.plugins.OneSignal.getIds(function(ids) {
-                //console.log('getIds: ' + JSON.stringify(ids));
-                //alert("userId = " + ids.userId + ", pushToken = " + ids.pushToken);
-                var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=39&id="
-                        + mProf.id
-                        + "&token="
-                        + ids.pushToken
-                        + "&one="
-                        + ids.userId;
-                $.ajax({
-                    url: postTo,
-                    dataType: "jsonp",
-                    method: "GET",
-                    jsonp: 'callback',
-                    jsonpCallback: 'PUSH_REGISTER',
-                    success: function(data) {
-                        localStorage.setItem("push", JSON.stringify(data));
-                    }
+            //User id to register after 7 seconds
+            setTimeout(function() {
+                window.plugins.OneSignal.getIds(function(ids) {
+                    //console.log('getIds: ' + JSON.stringify(ids));
+                    //alert("userId = " + ids.userId + ", pushToken = " + ids.pushToken);
+                    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=39&id="
+                            + mProf.id
+                            + "&token="
+                            + ids.pushToken
+                            + "&one="
+                            + ids.userId;
+                    $.ajax({
+                        url: postTo,
+                        dataType: "jsonp",
+                        method: "GET",
+                        jsonp: 'callback',
+                        jsonpCallback: 'PUSH_REGISTER',
+                        success: function(data) {
+                            localStorage.setItem("push", JSON.stringify(data));
+                        }
+                    });
                 });
-            });
+            }, 7000);
         }
     },
     // Update DOM on a Received Event
@@ -312,7 +316,7 @@ function filePicker() {
             function(result) {
                 var content = "";
                 for (var i = 0; i < result.length; i++) {
-                    alert(result[i]); //<a href="#" class="thumbnail"><img src="img.jpg" /></a>
+                    //alert(result[i]); //<a href="#" class="thumbnail"><img src="img.jpg" /></a>
                     content += '<img onclick="filePicker()"  src="' + result[i] + '" style="max-width:100%"/>';
                     localStorage.setItem("petAvatar", result[i]);
                     uploadFile(result[i]);
@@ -333,40 +337,91 @@ function filePicker() {
             });
 }
 
-//////Save pet
+function getUpload() {
+    var p = null;
+    if (localStorage.getItem("upload") != null) {
+        p = JSON.parse(localStorage.getItem("upload"));
+    }
+    return p;
+}
 
+function getLocation() {
+    var p = new Object();
+
+    p.lat = localStorage.getItem("lat");
+    p.lon = localStorage.getItem("lon");
+
+    return p;
+}
+//////Save pet
+/**
+ *
+ * https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=41&sexo=1&vacinado=1&id=5678508399394816&idOwner=4520495223406592&castrado=1&idade=36&lat=21&lon=48&tit=LindoP555555555555555555555555555555555555et&desc=%20descricao%20do%20pet&sexo=1&vacinado=2&token=000000000000000000000000000000000000000000000000000&porte=3
+ *
+ * */
+var petId = 0;
 function savePet() {
+    var perfil = getProfile();
+    //alert(JSON.stringify(perfil));
+    var pos = getLocation();
+    //alert(pos.lat);
+    var upload = getUpload();
+    //alert(JSON.stringify(upload));
+    id = petId;
+    var urlReq = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=41";
+    urlReq += "&sexo=" + $("#txt-sexo").val();
+    urlReq += "&id=" + id;
+    urlReq += "&idOwner=" + perfil.id;
+    urlReq += "&idade=" + $("#txt-idade").val();
+    urlReq += "&lat=" + pos.lat;
+    urlReq += "&lon=" + pos.lon;
+    urlReq += "&tit=" + encodeURI($("#txt-tit").val());
+    urlReq += "&desc=" + encodeURI($("#txt-desc-pet").val());
+    urlReq += "&vacinado=" + $("#ck-v").val();
+    urlReq += "&token=" + encodeURI(upload.response.substr(2, upload.response.length - 4));
+    urlReq += "&porte=" + $("#txt-porte").val();
+    urlReq += "&especie=" + $("#txt-tipo").val();
+    urlReq += "&castrado=" + $("#ck-c").val();
+    //alert(urlReq);
     $.ajax({
-        url: "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=40",
+        url: urlReq,
         dataType: "jsonp",
         method: "GET",
         jsonp: 'callback',
-        jsonpCallback: 'UPLOAD_PATH',
+        jsonpCallback: 'UPDATE_PET',
         success: function(data) {
-            if (data.in) {
-                resposta = new Object();
-                resposta.id = data.id;
-                resposta.name = data.name;
-                resposta.email = data.email;
-                resposta.url = "img/avatar.png";
-                window.location = "#page2";
+            localStorage.setItem("myPets", JSON.stringify(data));
+            petId = data.idPet;
+            loadMyPets();
+            alert('Pet cadastrado para adoção!' + petId);
 
-                $("#nmEmail").html(resposta.email);
-                $("#nmProfile").html(resposta.name);
-                //alert(resposta.picture.data.url)
-                $("#nmAvatar").attr("src", resposta.url);
-                $("#nmAvatar").attr("style", "border-radius: 50%;");
-
-                localStorage.setItem("profile", JSON.stringify(resposta));
-            } else {
-                alert("Ops...Usuário ou senha inválidos");
-            }
-            alert(JSON.stringify(data));
         }
     });
 }
 
+function loadMyPets() {
 
+    if (localStorage.getItem("myPets") != null) {
+        alert(localStorage.getItem("myPets"));
+        pets = JSON.parse(localStorage.getItem("myPets"));
+        var cMpt;
+        try {
+            for (i = 0; i < pets.mine.length; i++) {
+                mP = pets.mine[i];
+                alert(mP.getAvatar);
+                //$('#myPets').append();
+                cMpt += '<li><a><img src="' + mP.getAvatar + '"/>' + mP.getTitulo + '</a></li>';
+            }
+            $("#myPets").html(cMpt);
+        } catch (e) {
+            alert(e);
+        }
+    }
+}
+function loadAddPet() {
+    window.location = "#jpopCadastrarPet";
+    loadMyPets();
+}
 /**
  *  @Funtion to upload Files
  *
@@ -383,7 +438,7 @@ function uploadFile(filePath) {
             var fileURL = filePath;
             var uri = encodeURI(data.uploadPath);
             var options = new FileUploadOptions();
-            alert(fileURL);
+            //alert(fileURL);
             try {
                 options.fileKey = "myFile";
                 options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
@@ -396,9 +451,8 @@ function uploadFile(filePath) {
 
                 ft.upload(fileURL, uri,
                         function(r) {
-                            alert("Code = " + r.responseCode);
-                            alert("Response = " + r.response);
-                            alert("Sent = " + r.bytesSent);
+                            localStorage.setItem("upload", JSON.stringify(r));
+                            alert('Foto anexada com sucesso!');
                         },
                         function(error) {
                             alert("An error has occurred: Code = " + error.code);
@@ -413,3 +467,8 @@ function uploadFile(filePath) {
         }
     });
 }
+
+/**
+ *
+ * /infosegcontroller.exec?action=41&sexo=2&id=0&idOwner=102102937404388791&idade=23&lat=-27.5966042&lon=-48.5453285&tit=Gato%20siam%C3%AAs%20&desc=Gata%20siamesa%20de%20AP%20estou%20mudando%20para%20outra%20cidade1&token=AMIfv94O_Hh0a8uaGLgIv37RtSs1hGvdrur7DsEdr5gNxEpAdNGIEqPCL2TLMpMFHyz-gV3cjnJO0CDs8O88ouoDosgHwR--N4nfMk3-NqF3BzXYU3U-qi1uuskiukh5zR0HSeZ6iAVghDLdjHvBuU9-IGQK_Yl1MRwjzzVvNmEBmqMjGMglYFc&porte=1&especie=2&callback=UPDATE_PET&_=1492673034094
+ * */
