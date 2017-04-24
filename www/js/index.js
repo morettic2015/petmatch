@@ -33,6 +33,7 @@ var app = {
         //Recover profile from previous session
         var mProf = getProfile();
         if (mProf != null) {
+            myLoader.show();
             mProf.img = "img/avatar.png";
             //alert(JSON.stringify(response));
             window.location = "#page2";
@@ -55,9 +56,8 @@ var app = {
                             localStorage.setItem("lon", position.coords.longitude);
                         },
                         function(error) {
-                            alert('code: ' + error.code + '\n' +
-                                    'message: ' + error.message + '\n');
-                            alert(JSON.stringify(error));
+                            alert(error);
+                            //alert(JSON.stringify(error));
                         });
             }, 500);
 
@@ -91,10 +91,15 @@ var app = {
                         jsonpCallback: 'PUSH_REGISTER',
                         success: function(data) {
                             localStorage.setItem("push", JSON.stringify(data));
+                        },
+                        error: function(err) {
+                            myLoader.hide();
+                            alert(err);
                         }
                     });
                 });
             }, 7000);
+            myLoader.hide();
         }
     },
     // Update DOM on a Received Event
@@ -175,7 +180,11 @@ function loginFacebook() {
                                 } else {
                                     alert("Ops...Usuário ou senha inválidos");
                                 }
-                                alert(JSON.stringify(data));
+                                //alert(JSON.stringify(data));
+                            },
+                            error: function(err) {
+                                myLoader.hide();
+                                alert(err);
                             }
                         });
 
@@ -222,6 +231,7 @@ function getProfile() {
 }
 
 function saveProfile() {
+
     perfil = getProfile();
     perfil.name = $("#txt-nome").val();
     perfil.email = $("#txt-email1").val();
@@ -242,6 +252,7 @@ function saveProfile() {
             perfil.rua == "") {
         alert('Verifique seus dados!');
     } else {//Save profile
+        myLoader.show();
         //localStorage.setItem("profile", JSON.stringify(perfil));
         postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=38&"
                 + "email=" + $("#txt-email1").val()
@@ -266,8 +277,12 @@ function saveProfile() {
                 perfil.city = data.addrs[0].city;
 
                 localStorage.setItem("profile", JSON.stringify(perfil));
-
+                myLoader.hide();
                 alert("Dados atualizados com sucesso!");
+            },
+            error: function(err) {
+                myLoader.hide();
+                alert(err);
             }
         });
     }
@@ -304,6 +319,10 @@ function login() {
                 alert("Ops...Usuário ou senha inválidos");
             }
             alert(JSON.stringify(data));
+        },
+        error: function(err) {
+            myLoader.hide();
+            alert(err);
         }
     });
 }
@@ -359,8 +378,11 @@ function getLocation() {
  * https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=41&sexo=1&vacinado=1&id=5678508399394816&idOwner=4520495223406592&castrado=1&idade=36&lat=21&lon=48&tit=LindoP555555555555555555555555555555555555et&desc=%20descricao%20do%20pet&sexo=1&vacinado=2&token=000000000000000000000000000000000000000000000000000&porte=3
  *
  * */
+var isEdit = false;
 var petId = 0;
+var avatarUrl = null
 function savePet() {
+    myLoader.show();
     var perfil = getProfile();
     //alert(JSON.stringify(perfil));
     var pos = getLocation();
@@ -378,7 +400,12 @@ function savePet() {
     urlReq += "&tit=" + encodeURI($("#txt-tit").val());
     urlReq += "&desc=" + encodeURI($("#txt-desc-pet").val());
     urlReq += "&vacinado=" + $("#ck-v").val();
-    urlReq += "&token=" + encodeURI(upload.response.substr(2, upload.response.length - 4));
+    if (isEdit) {
+        token = (encodeURI(upload.response.substr(2, upload.response.length - 4)) != undefined) ? encodeURI(upload.response.substr(2, upload.response.length - 4)) : avatarUrl.substr(78, avatarUrl.length - 1);
+        urlReq += "&token=" + encodeURI(token);
+    } else {
+        urlReq += "&token=" + encodeURI(upload.response.substr(2, upload.response.length - 4));
+    }
     urlReq += "&porte=" + $("#txt-porte").val();
     urlReq += "&especie=" + $("#txt-tipo").val();
     urlReq += "&castrado=" + $("#ck-c").val();
@@ -393,40 +420,123 @@ function savePet() {
             localStorage.setItem("myPets", JSON.stringify(data));
             petId = data.idPet;
             loadMyPets();
-            alert('Pet cadastrado para adoção!' + petId);
-
+            if (isEdit) {
+                alert('Pet atualizado!');
+            } else {
+                alert('Pet cadastrado para adoção!');
+            }
+            myLoader.hide();
+            $("#frmPet").get(0).reset();
+        },
+        error: function(err) {
+            myLoader.hide();
+            alert(err);
         }
     });
+}// porte, vacinado, avatar, idade, descricao, especie,
+function setPet(id) {
+    var myPets = pets.mine
+    //alert(castrado);
+    isEdit = true;
+    //alert(myPets[id].getSexo);
+    // alert(myPets[id].getEspecie);
+    petId = myPets[id].id;
+    $("#ck-c").val(myPets[id].getCastrado);
+    $("#txt-sexo").val(myPets[id].getSexo);
+    $("#txt-porte").val(myPets[id].getPorte);
+    $("#ck-v").val(myPets[id].getVacinado);
+    $("#txt-tipo").val(myPets[id].getEspecie);
+    $("#ck-c").val(myPets[id].getCastrado).change();
+    $("#txt-porte").val(myPets[id].getPorte).change();
+    $("#ck-v").val(myPets[id].getVacinado).change();
+    $("#txt-sexo").val(myPets[id].getSexo).change();
+    $("#txt-tipo").val(myPets[id].getEspecie).change();
+    $("#txt-idade").val(myPets[id].getIdade);
+    $("#txt-desc-pet").val(myPets[id].getDescricao);
+    $("#pic_avatar_pet").attr("src", myPets[id].getAvatar);
+    $("#txt-tit").val(myPets[id].getTitulo);
+    //alert(id);
+    avatarUrl = myPets[id].getAvatar;
+    //alert(JSON.stringify(myPets[id]));
 }
 
-function loadMyPets() {
+/**
+ * @remove pet
+ * */
+function removePet() {
+    var perfil = getProfile();
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=42"
+            + "&idPet=" + petId
+            + "&idOwner=" + perfil.id;
+    if (confirm("Deseja remover o PET selecionado?")) {
+        myLoader.show();
+        $.ajax({
+            url: postTo,
+            dataType: "jsonp",
+            method: "GET",
+            jsonp: 'callback',
+            jsonpCallback: 'REMOVE',
+            success: function(data) {
+                localStorage.setItem("myPets", JSON.stringify(data));
+                try {
+                    loadMyPets();
 
+                } catch (e) {
+                    alert(e);
+                } finally {
+                    $("#frmPet").get(0).reset()
+                    myLoader.hide();
+                    alert("Pet removido com sucesso!");
+                }
+            },
+            error: function(err) {
+                myLoader.hide();
+                alert(err);
+            }
+        });
+    }
+}
+
+var pets = [];
+function loadMyPets() {
+    $("#myPets").html("");
+    $("#myPets").listview("refresh");
     if (localStorage.getItem("myPets") != null) {
-        alert(localStorage.getItem("myPets"));
+        //alert(localStorage.getItem("myPets"));
         pets = JSON.parse(localStorage.getItem("myPets"));
-        var cMpt;
+        content = "";
+
         try {
             for (i = 0; i < pets.mine.length; i++) {
                 mP = pets.mine[i];
-                alert(mP.getAvatar);
-                //$('#myPets').append();
-                cMpt += '<li><a><img src="' + mP.getAvatar + '"/>' + mP.getTitulo + '</a></li>';
+                //alert(JSON.stringify(mP));
+                content += '<li><a id="' + mP.id + '" onclick=setPet("' + i + '")>"'
+                        + '<img style="max-width:25%" src="' + mP.getAvatar + '"/>' + mP.getTitulo + '</a></li>';
+
             }
-            $("#myPets").html(cMpt);
+
         } catch (e) {
             alert(e);
+        } finally {
+            $("#myPets").html(content);
+            $("#myPets").listview("refresh");
+            myLoader.hide();
         }
     }
 }
 function loadAddPet() {
+    myLoader.show();
     window.location = "#jpopCadastrarPet";
     loadMyPets();
+
+
 }
 /**
  *  @Funtion to upload Files
  *
  * */
 function uploadFile(filePath) {
+    myLoader.show();
     $.ajax({
         url: "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=40",
         dataType: "jsonp",
@@ -434,7 +544,7 @@ function uploadFile(filePath) {
         jsonp: 'callback',
         jsonpCallback: 'UPLOAD_PATH',
         success: function(data) {
-            alert(JSON.stringify(data));
+            //alert(JSON.stringify(data));
             var fileURL = filePath;
             var uri = encodeURI(data.uploadPath);
             var options = new FileUploadOptions();
@@ -461,9 +571,16 @@ function uploadFile(filePath) {
                         },
                         options
                         );
+
             } catch (e) {
                 alert(e);
+            } finally {
+                myLoader.show();
             }
+        },
+        error: function(err) {
+            myLoader.hide();
+            alert(err);
         }
     });
 }
@@ -472,3 +589,26 @@ function uploadFile(filePath) {
  *
  * /infosegcontroller.exec?action=41&sexo=2&id=0&idOwner=102102937404388791&idade=23&lat=-27.5966042&lon=-48.5453285&tit=Gato%20siam%C3%AAs%20&desc=Gata%20siamesa%20de%20AP%20estou%20mudando%20para%20outra%20cidade1&token=AMIfv94O_Hh0a8uaGLgIv37RtSs1hGvdrur7DsEdr5gNxEpAdNGIEqPCL2TLMpMFHyz-gV3cjnJO0CDs8O88ouoDosgHwR--N4nfMk3-NqF3BzXYU3U-qi1uuskiukh5zR0HSeZ6iAVghDLdjHvBuU9-IGQK_Yl1MRwjzzVvNmEBmqMjGMglYFc&porte=1&especie=2&callback=UPDATE_PET&_=1492673034094
  * */
+
+var Loader = function() {
+    this.show = function() {
+        var $this = $(this),
+                        theme = $this.jqmData("theme") || $.mobile.loader.prototype.options.theme,
+                        msgText = $this.jqmData("msgtext") || $.mobile.loader.prototype.options.text,
+                        textVisible = $this.jqmData("textvisible") || $.mobile.loader.prototype.options.textVisible,
+                        textonly = !!$this.jqmData("textonly");
+                html = $this.jqmData("html") || "";
+            $.mobile.loading("show", {
+                        text: msgText,
+                        textVisible: textVisible,
+                        theme: theme,
+                        textonly: textonly,
+                        html: html
+            });
+    }
+    this.hide = function() {
+           $.mobile.loading("hide");
+    }
+}
+
+var myLoader = new Loader();

@@ -161,7 +161,7 @@
         </div>
         <!-- pagina de cadastro do pet-->
 
-        <div  data-role="page"  id="jpopCadastrarPet" >
+        <div  data-role="page"  id="jpopCadastrarPet">
             <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
                 <a href="#page2" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
                 <center><img src="img/logo_pet_b.png" width="100"></center>
@@ -170,67 +170,70 @@
                 <h3>Cadastrar para adoção</h3>
 
             </div>
-            <div id="ctn-err" class="bi-invisible"></div>
-            <!-- <label for="slider2">Em adoção:</label>
-             <select name="slider2" id="slider2" data-role="slider">
-                 <option value="on">Sim</option>
-                 <option value="off">Não</option>
-             </select>-->
-            <label for="txt-tipo">Espécie</label>
-            <select name="txt-tipo" id="txt-tipo">
-                <option value="1">Cão</option>
-                <option value="2">Gato</option>
-            </select>
-            <label for="txt-tit">Titulo</label>
-            <input type="hidden" name="txt-avatar-pet" id="txt-avatar-pet"/>
-            <input type="text" name="txt-tit" id="txt-tit" value="">
-            <label for="txt-idade">Idade (meses)</label>
-            <input type="number" name="txt-idade" id="txt-idade" value="0">
-            <label for="txt-sexo">Sexo</label>
-            <select name="txt-sexo" id="txt-sexo">
-                <option value="1">Macho</option>
-                <option value="2">Fêmea</option>
-            </select>
-            <label for="txt-porte">Porte</label>
-            <select name="txt-porte" id="txt-porte">
-                <option value="1">Pequeno (até 15kg)</option>
-                <option value="2">Médio (até 25kg)</option>
-                <option value="3">Grande(mais de 25kg)</option>
-            </select>
-            <label for="ck-c">Castrado</label>
-            <select name="ck-c" id="ck-c">
-                <option value="0">Não</option>
-                <option value="1">Sim</option>
-            </select>
-            <label for="ck-v">Vacinado</label>
-            <select name="ck-v" id="ck-v">
-                <option value="0">Não</option>
-                <option value="1">Sim</option>
-            </select>
+            <form name="frmPet" id="frmPet">
+                <div id="ctn-err" class="bi-invisible"></div>
+                <!-- <label for="slider2">Em adoção:</label>
+                 <select name="slider2" id="slider2" data-role="slider">
+                     <option value="on">Sim</option>
+                     <option value="off">Não</option>
+                 </select>-->
+                <label for="txt-tipo">Espécie</label>
+                <select name="txt-tipo" id="txt-tipo">
+                    <option value="1">Cão</option>
+                    <option value="2">Gato</option>
+                </select>
+                <label for="txt-tit">Titulo</label>
 
-            <label for="txt-desc-pet">Descriçao</label>
-            <textarea name="txt-desc-pet" id="txt-desc-pet" rows="3" style="height: 200px"></textarea>
+                <input type="text" name="txt-tit" id="txt-tit" value="">
+                <label for="txt-idade">Idade (meses)</label>
+                <input type="number" name="txt-idade" id="txt-idade" value="0">
+                <label for="txt-sexo">Sexo</label>
+                <select name="txt-sexo" id="txt-sexo">
+                    <option value="1">Macho</option>
+                    <option value="2">Fêmea</option>
+                </select>
+                <label for="txt-porte">Porte</label>
+                <select name="txt-porte" id="txt-porte">
+                    <option value="1">Pequeno (até 15kg)</option>
+                    <option value="2">Médio (até 25kg)</option>
+                    <option value="3">Grande(mais de 25kg)</option>
+                </select>
+                <label for="ck-c">Castrado</label>
+                <select name="ck-c" id="ck-c">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                </select>
+                <label for="ck-v">Vacinado</label>
+                <select name="ck-v" id="ck-v">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                </select>
+
+                <label for="txt-desc-pet">Descriçao</label>
+                <textarea name="txt-desc-pet" id="txt-desc-pet" rows="3" style="height: 200px"></textarea>
+            </form>
             <center>
                 <div id="div_pic">
-                    <img src="img/foto.png" style=" width: 50%;height: auto;"/>
+                    <img id="pic_avatar_pet" src="img/foto.png" style="height: 150px;;max-width:150px;background-size:cover;"/>
                 </div>
             </center>
-            <a href="#" id="btn-attatch" onclick="filePicker()" class="ui-btn ui-btn-b ui-btn ui-corner-all"  style="background: #3b5999;">
-                Anexar foto
+            <input type="hidden" name="txt-avatar-pet" id="txt-avatar-pet"/>
+            <a href="#" id="btn-attatch" onclick="filePicker()" class="ui-btn ui-btn-b ui-btn ui-corner-all ui-icon-camera"  style="background: #3b5999;">
+                Anexar Foto
             </a>
-
-            <a href="#"  onclick="savePet()" id="savePet" class="ui-btn ui-btn-b ui-corner-all"  style=" background: #00a599;">
-                Salvar
-            </a>
-            <a href="#"  id="delPet" class="ui-btn ui-btn-b ui-corner-all"  style=" background: #ea4f70;">
-                Excluir
-            </a>
+            <center>
+                <a href="#"  onclick="savePet()" id="savePet" class="ui-btn ui-btn-b ui-corner-all ui-btn-inline ui-icon-plus"  style=" background: #00a599;">
+                    Salvar
+                </a>
+                <a href="#"  onclick="removePet()" id="delPet" class="ui-btn ui-btn-b ui-corner-all ui-btn-inline ui-icon-delete"  style=" background: #ea4f70;">
+                    Excluir
+                </a>
+            </center>
             <p/>
             <h3>Meus pets</h3>
             <ul data-role="listview" id="myPets" data-split-icon="arrow" data-split-theme="d">
 
             </ul>
-
             <p class="spacerBottom"/>
         </div>
 
