@@ -33,7 +33,7 @@ var app = {
         //Recover profile from previous session
         var mProf = getProfile();
         if (mProf != null) {
-            myLoader.show();
+            //myLoader.show();
             mProf.img = "img/avatar.png";
             //alert(JSON.stringify(response));
             window.location = "#page2";
@@ -49,17 +49,17 @@ var app = {
              * */
 
             //INit geolocation
-            setTimeout(function() {
-                navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            localStorage.setItem("lat", position.coords.latitude);
-                            localStorage.setItem("lon", position.coords.longitude);
-                        },
-                        function(error) {
-                            alert(error);
-                            //alert(JSON.stringify(error));
-                        });
-            }, 500);
+
+            navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        localStorage.setItem("lat", position.coords.latitude);
+                        localStorage.setItem("lon", position.coords.longitude);
+                    },
+                    function(error) {
+                        alert(error);
+                        //alert(JSON.stringify(error));
+                    }
+            );
 
             /**
              * @Push Notifications enabled
@@ -72,34 +72,34 @@ var app = {
                     .startInit("cb2da5f1-6c1e-4692-814e-01fd3c11b10d")
                     .handleNotificationOpened(notificationOpenedCallback)
                     .endInit();
-            //User id to register after 7 seconds
-            setTimeout(function() {
-                window.plugins.OneSignal.getIds(function(ids) {
-                    //console.log('getIds: ' + JSON.stringify(ids));
-                    //alert("userId = " + ids.userId + ", pushToken = " + ids.pushToken);
-                    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=39&id="
-                            + mProf.id
-                            + "&token="
-                            + ids.pushToken
-                            + "&one="
-                            + ids.userId;
-                    $.ajax({
-                        url: postTo,
-                        dataType: "jsonp",
-                        method: "GET",
-                        jsonp: 'callback',
-                        jsonpCallback: 'PUSH_REGISTER',
-                        success: function(data) {
-                            localStorage.setItem("push", JSON.stringify(data));
-                        },
-                        error: function(err) {
-                            myLoader.hide();
-                            alert(err);
-                        }
-                    });
+
+            window.plugins.OneSignal.getIds(function(ids) {
+                //console.log('getIds: ' + JSON.stringify(ids));
+                //alert("userId = " + ids.userId + ", pushToken = " + ids.pushToken);
+                var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=39&id="
+                        + mProf.id
+                        + "&token="
+                        + ids.pushToken
+                        + "&one="
+                        + ids.userId;
+                // alert(postTo);
+                $.ajax({
+                    url: postTo,
+                    dataType: "jsonp",
+                    method: "GET",
+                    jsonp: 'callback',
+                    jsonpCallback: 'PUSH_REGISTER',
+                    success: function(data) {
+                        alert(JSON.stringify(data));
+                        localStorage.setItem("push", JSON.stringify(data));
+                    },
+                    error: function(err) {
+                        myLoader.hide();
+                        alert(err);
+                    }
                 });
-            }, 7000);
-            myLoader.hide();
+            });
+            //myLoader.hide();
         }
     },
     // Update DOM on a Received Event
@@ -156,6 +156,7 @@ function loginFacebook() {
                     if (response.error) {
                         alert("Não foi possível autorizar sua conta no Facebook" + JSON.stringify(response.error));
                     } else {
+                        myLoader.show();
                         var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=37&email="
                                 + resposta.email
                                 + "&name="
@@ -180,6 +181,7 @@ function loginFacebook() {
                                 } else {
                                     alert("Ops...Usuário ou senha inválidos");
                                 }
+                                myLoader.hide();
                                 //alert(JSON.stringify(data));
                             },
                             error: function(err) {

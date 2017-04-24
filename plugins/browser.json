@@ -27,10 +27,10 @@
         "com.synconset.imagepicker": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
-        "onesignal-cordova-plugin": {
+        "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
-        "cordova-plugin-file-transfer": {
+        "onesignal-cordova-plugin": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     },
