@@ -33,6 +33,7 @@ var app = {
         //Recover profile from previous session
         var mProf = getProfile();
         if (mProf != null) {
+            //alert(perfil.id);
             //myLoader.show();
             mProf.img = "img/avatar.png";
             //alert(JSON.stringify(response));
@@ -54,6 +55,7 @@ var app = {
                     function(position) {
                         localStorage.setItem("lat", position.coords.latitude);
                         localStorage.setItem("lon", position.coords.longitude);
+                        loadMainPets(position.coords.latitude, position.coords.longitude, 4000);
                     },
                     function(error) {
                         alert(error);
@@ -90,7 +92,7 @@ var app = {
                     jsonp: 'callback',
                     jsonpCallback: 'PUSH_REGISTER',
                     success: function(data) {
-                        alert(JSON.stringify(data));
+                        //alert(JSON.stringify(data));
                         localStorage.setItem("push", JSON.stringify(data));
                     },
                     error: function(err) {
@@ -139,6 +141,85 @@ function loginGoogle() {
                 alert('error: ' + msg);
             }
     );
+}
+/**
+ * @ Open pop up to set inner content at Adopt Screen (main)
+ * */
+function viewPet(petId) {
+    $("#jpop").popup("open");
+    //alert(JSON.stringify(pets[petId]));
+    $("#imgDetailPet").attr("src", allPets[petId].getAvatar);
+    $("#imgDetailPet").attr("style", "max-height:200px");
+    $("#titDetailPet").html(allPets[petId].getTitulo);
+    //alert(pets[petId].getPort);
+    var desc = allPets[petId].getDescricao;
+    desc += "<br><small>";
+    desc += "<b>Espécie:</b>";
+    desc += allPets[petId].getEspecie == "1" ? "Cão<br>" : "Gato<br>";
+    desc += "<b>Porte:</b>";
+    desc += allPets[petId].getPorte == "1" ? "Até 15kg<br>" : allPets[petId].getPorte == "2" ? "Até 25kg<br>" : "Mais de 25kg<br>";
+    desc += "<b>Vacinado:</b>";
+    desc += allPets[petId].getVacinado == "1" ? "SIM<br>" : "NÃO<br>";
+    desc += "<b>Castrado:</b>";
+    desc += allPets[petId].getCastrado == "1" ? "SIM<br>" : "NÃO<br>";
+    desc += "<b>Sexo:</b>";
+    desc += allPets[petId].getSexo == "1" ? "MACHO<br>" : "FÊMEA<br>";
+    desc += "<b>Idade:</b>";
+    desc += allPets[petId].getIdade + "(meses)";
+    desc += "</small>";
+    $("#descDetailPet").html(desc);
+
+}
+var allPets = [];
+function loadMainPets(lat, lon, dist) {
+    myLoader.show();
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=43&lat=" + lat
+            + "&lon=" + lon
+            + "&d=" + dist;
+    //alert(postTo);
+    $.ajax({
+        url: postTo,
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'SEARCH',
+        success: function(data) {
+
+            //  $("#listPetsMain").html('');
+            //  $("#listPetsMain").listview("refresh");
+            // alert(JSON.stringify(data));
+            //alert(localStorage.getItem("myPets"));
+            allPets = data.result;
+            content = '<li data-role="divider">Pets para adoção (' + allPets.length + ')</li>';
+
+            try {
+                for (i = 0; i < allPets.length; i++) {
+                    mP = allPets[i];
+                    //;
+                    content += '<li><a href="#" onclick="viewPet(' + i + ')"><img src="' + mP.getAvatar
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h2>' + mP.getTitulo
+                            + '</h2><p>' + mP.getDescricao
+                            + '</p> </a></li>';
+                }
+
+            } catch (e) {
+                alert(e);
+            } finally {
+                $("#listPetsMain").html(content);
+                $("#listPetsMain").listview("refresh");
+                myLoader.hide();
+            }
+
+            //myLoader.hide();
+            //alert(JSON.stringify(data));
+        },
+        error: function(err) {
+            loadMainPets(lat, lon, dist);
+            //myLoader.hide();
+            //alert(err);
+        }
+    });
+
 }
 /**
  * @Facebook login and settings on Main Screen
@@ -338,7 +419,7 @@ function filePicker() {
                 var content = "";
                 for (var i = 0; i < result.length; i++) {
                     //alert(result[i]); //<a href="#" class="thumbnail"><img src="img.jpg" /></a>
-                    content += '<img onclick="filePicker()"  src="' + result[i] + '" style="max-width:100%"/>';
+                    content += '<img id="pic_avatar_pet" onclick="filePicker()"  src="' + result[i] + '" style="border-radius: 15%;max-width:100px"/>';
                     localStorage.setItem("petAvatar", result[i]);
                     uploadFile(result[i]);
                 }
@@ -384,12 +465,25 @@ var isEdit = false;
 var petId = 0;
 var avatarUrl = null
 function savePet() {
-    myLoader.show();
+
     var perfil = getProfile();
     //alert(JSON.stringify(perfil));
     var pos = getLocation();
     //alert(pos.lat);
     var upload = getUpload();
+
+    if (pos == null || pos.lat == undefined) {
+        alert('Ative seu GPS para cadastrar o Pet!');
+        return;
+    }
+    if ($("#txt-tit").val() == "" || $("#txt-desc-pet").val() == "") {
+        alert('Verifique os dados do pet!');
+        return;
+    }
+    if (!confirm("Deseja salvar novo Pet para adoção?")) {
+        return;
+    }
+    myLoader.show();
     //alert(JSON.stringify(upload));
     id = petId;
     var urlReq = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=41";
@@ -421,7 +515,7 @@ function savePet() {
         success: function(data) {
             localStorage.setItem("myPets", JSON.stringify(data));
             petId = data.idPet;
-            loadMyPets();
+
             if (isEdit) {
                 alert('Pet atualizado!');
             } else {
@@ -429,6 +523,9 @@ function savePet() {
             }
             myLoader.hide();
             $("#frmPet").get(0).reset();
+            loadMyPets();
+            petId = 0;
+            isEdit = false;
         },
         error: function(err) {
             myLoader.hide();
@@ -437,28 +534,42 @@ function savePet() {
     });
 }// porte, vacinado, avatar, idade, descricao, especie,
 function setPet(id) {
-    var myPets = pets.mine
-    //alert(castrado);
-    isEdit = true;
-    //alert(myPets[id].getSexo);
-    // alert(myPets[id].getEspecie);
-    petId = myPets[id].id;
-    $("#ck-c").val(myPets[id].getCastrado);
-    $("#txt-sexo").val(myPets[id].getSexo);
-    $("#txt-porte").val(myPets[id].getPorte);
-    $("#ck-v").val(myPets[id].getVacinado);
-    $("#txt-tipo").val(myPets[id].getEspecie);
-    $("#ck-c").val(myPets[id].getCastrado).change();
-    $("#txt-porte").val(myPets[id].getPorte).change();
-    $("#ck-v").val(myPets[id].getVacinado).change();
-    $("#txt-sexo").val(myPets[id].getSexo).change();
-    $("#txt-tipo").val(myPets[id].getEspecie).change();
-    $("#txt-idade").val(myPets[id].getIdade);
-    $("#txt-desc-pet").val(myPets[id].getDescricao);
-    $("#pic_avatar_pet").attr("src", myPets[id].getAvatar);
-    $("#txt-tit").val(myPets[id].getTitulo);
-    //alert(id);
-    avatarUrl = myPets[id].getAvatar;
+    try {
+        //alert(localStorage.getItem("myPets"));
+        var list = JSON.parse(localStorage.getItem("myPets"));
+        var myPets = list.mine;
+        //alert(castrado);
+        isEdit = true;
+        //alert(myPets[id].getSexo);
+        // alert(myPets[id].getEspecie);
+        petId = myPets[id].id;
+        $("#ck-c").val(myPets[id].getCastrado);
+        $("#txt-sexo").val(myPets[id].getSexo);
+        $("#txt-porte").val(myPets[id].getPorte);
+        $("#ck-v").val(myPets[id].getVacinado);
+        $("#txt-tipo").val(myPets[id].getEspecie);
+        $("#ck-c").val(myPets[id].getCastrado).change();
+        $("#txt-porte").val(myPets[id].getPorte).change();
+        $("#ck-v").val(myPets[id].getVacinado).change();
+        $("#txt-sexo").val(myPets[id].getSexo).change();
+        $("#txt-tipo").val(myPets[id].getEspecie).change();
+        $("#txt-idade").val(myPets[id].getIdade);
+        $("#txt-desc-pet").val(myPets[id].getDescricao);
+        //$("#pic_avatar_pet").attr("src", );
+
+        /*  document.getElementById('pic_avatar_pet').src = myPets[id].getAvatar;
+         document.getElementById('pic_avatar_pet').style = "border-radius: 15%;max-width:100px";*/
+
+        $("#pic_avatar_pet").attr("src", myPets[id].getAvatar);
+        $("#pic_avatar_pet").attr("style", "border-radius: 15%;max-width:100px");
+        $("#txt-tit").val(myPets[id].getTitulo);
+        //alert(id);
+        avatarUrl = myPets[id].getAvatar;
+
+        //alert(avatarUrl);
+    } catch (e) {
+        alert(e);
+    }
     //alert(JSON.stringify(myPets[id]));
 }
 
@@ -466,7 +577,12 @@ function setPet(id) {
  * @remove pet
  * */
 function removePet() {
+    if (petId == 0) {
+        alert('Selecione um pet para remover!');
+        return;
+    }
     var perfil = getProfile();
+
     var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=42"
             + "&idPet=" + petId
             + "&idOwner=" + perfil.id;
@@ -482,14 +598,18 @@ function removePet() {
                 localStorage.setItem("myPets", JSON.stringify(data));
                 try {
                     loadMyPets();
-
+                    alert("Pet removido com sucesso!");
+                    $("#frmPet").get(0).reset()
+                    $("#pic_avatar_pet").attr("src", "img/foto.png");
+                    $("#pic_avatar_pet").attr("style", "border-radius: 15%;max-width:100px");
+                    myLoader.hide();
+                    petId = 0;
                 } catch (e) {
                     alert(e);
                 } finally {
-                    $("#frmPet").get(0).reset()
-                    myLoader.hide();
-                    alert("Pet removido com sucesso!");
+
                 }
+
             },
             error: function(err) {
                 myLoader.hide();
@@ -498,34 +618,67 @@ function removePet() {
         });
     }
 }
-
+/**
+ *  @carrega my pets
+ * */
 var pets = [];
 function loadMyPets() {
-    $("#myPets").html("");
-    $("#myPets").listview("refresh");
-    if (localStorage.getItem("myPets") != null) {
-        //alert(localStorage.getItem("myPets"));
-        pets = JSON.parse(localStorage.getItem("myPets"));
-        content = "";
+    //$("#myPets").html("");
+    //$("#myPets").listview("refresh");
+    var mProf = getProfile();
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=44&id=" + mProf.id;
+    //alert(postTo);
+    myLoader.show();
+    $.ajax({
+        url: postTo,
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'MINE',
+        success: function(data) {
+            localStorage.setItem("myPets", JSON.stringify(data));
+            //alert(localStorage.getItem("myPets"));
+            pets = data.mine;
+            content = "";
+            try {
+                for (i = 0; i < pets.length; i++) {
+                    mP = pets[i];
 
-        try {
-            for (i = 0; i < pets.mine.length; i++) {
-                mP = pets.mine[i];
-                //alert(JSON.stringify(mP));
-                content += '<li><a id="' + mP.id + '" onclick=setPet("' + i + '")>"'
-                        + '<img style="max-width:25%" src="' + mP.getAvatar + '"/>' + mP.getTitulo + '</a></li>';
+                    content += '<li><a href="#" onclick="setPet(' + i + ')"  id="' + mP.id + '" ><img src="' + mP.getAvatar
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h2>' + mP.getTitulo
+                            + '</h2><p>' + mP.getDescricao
+                            + '</p> </a></li>';
+                    //alert(JSON.stringify(mP));
+                    /*  content += '<li><a id="' + mP.id + '" onclick=setPet("' + i + '")>'
+                     + '<img style="max-width:25%" src="' + mP.getAvatar + '"/>' + mP.getTitulo + '</a></li>';*/
+                }
 
+                $("#myPets").html(content);
+                $("#myPets").listview("refresh");
+                myLoader.hide();
+            } catch (e) {
+                alert(e);
+            } finally {
+                $("#pic_avatar_pet").attr("src", "img/foto.png");
+                $("#pic_avatar_pet").attr("style", "border-radius: 15%;max-width:100px");
             }
-
-        } catch (e) {
-            alert(e);
-        } finally {
-            $("#myPets").html(content);
-            $("#myPets").listview("refresh");
+        },
+        error: function(err) {
             myLoader.hide();
+            alert(err);
         }
+    });
+}
+function novoPet() {
+    if (confirm('Deseja cadastrar um novo pet?')) {
+        $("#frmPet").get(0).reset();
+        $("#pic_avatar_pet").attr("src", "img/foto.png");
+        $("#pic_avatar_pet").attr("style", "border-radius: 15%;max-width:100px");
+        petId = 0;
+        isEdit = false;
     }
 }
+
 function loadAddPet() {
     myLoader.show();
     window.location = "#jpopCadastrarPet";
@@ -577,7 +730,7 @@ function uploadFile(filePath) {
             } catch (e) {
                 alert(e);
             } finally {
-                myLoader.show();
+                myLoader.hide();
             }
         },
         error: function(err) {

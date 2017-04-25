@@ -152,7 +152,7 @@
                 <label for="txt-password1">Senha</label>
                 <input type="password" name="txt-password1" id="txt-password1" value="">
 
-                <a href="#" onclick="saveProfile()" id="btn-google" class="ui-btn ui-btn-b ui-corner-all" style=" background: #00a599;">
+                <a href="#" onclick="saveProfile()" id="btn-google" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left" style=" background: #00a599;">
                     Salvar
                 </a>
             </div>
@@ -166,6 +166,7 @@
                 <a href="#page2" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
                 <center><img src="img/logo_pet_b.png" width="100"></center>
             </div>
+
             <div data-role="main" class="ui-content">
                 <h3>Cadastrar para adoção</h3>
 
@@ -214,19 +215,22 @@
             </form>
             <center>
                 <div id="div_pic">
-                    <img id="pic_avatar_pet" src="img/foto.png" style="height: 150px;;max-width:150px;background-size:cover;"/>
+                    <img id="pic_avatar_pet" style="height: 150px;;max-width:150px;background-size:cover;"/>
                 </div>
             </center>
             <input type="hidden" name="txt-avatar-pet" id="txt-avatar-pet"/>
-            <a href="#" id="btn-attatch" onclick="filePicker()" class="ui-btn ui-btn-b ui-btn ui-corner-all ui-icon-camera"  style="background: #3b5999;">
-                Anexar Foto
-            </a>
             <center>
-                <a href="#"  onclick="savePet()" id="savePet" class="ui-btn ui-btn-b ui-corner-all ui-btn-inline ui-icon-plus"  style=" background: #00a599;">
+                <a href="#" id="btn-attatch" onclick="filePicker()" class="ui-btn ui-btn-icon-notext ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-camera"  style="background: #3b5999;">
+                    Foto
+                </a>
+                <a href="#"  onclick="savePet()" id="savePet" class="ui-btn   ui-btn-b ui-shadow ui-corner-all ui-icon-plus ui-btn-inline ui-mini"  style=" background: #00a599;">
                     Salvar
                 </a>
-                <a href="#"  onclick="removePet()" id="delPet" class="ui-btn ui-btn-b ui-corner-all ui-btn-inline ui-icon-delete"  style=" background: #ea4f70;">
+                <a href="#"  onclick="removePet()" id="delPet" class="ui-btn    ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-inline ui-mini"  style=" background: #ea4f70;">
                     Excluir
+                </a>
+                <a href="#" id="btn-cancel-pet" onclick="novoPet()"  class="ui-btn ui-btn-b ui-shadow   ui-corner-all ui-icon-info  ui-btn-inline ui-mini"  style="background: #2ad;">
+                    Novo
                 </a>
             </center>
             <p/>
@@ -268,81 +272,8 @@
             <!-- /panel -->
             <!-- /header -->
             <div role="main" class="ui-content" id="page-signin">
-                <ul data-role="listview" data-inset="true">
-                    <li data-role="divider">Pets para adoção</li>
-                    <!-- <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                     <li>
-                         <a href="#">
-                             <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                             <h2>Pit bull</h2>
-                             <p>Pit bull castrado, vacinado e com cheiro de rola.</p>
-                         </a>
-                         <a href="#jpop" data-rel="popup" data-transition="pop">Download Browser</a>
-                     </li>
-                    -->
+                <ul data-role="listview" data-inset="true" id="listPetsMain">
+
                 </ul>
                 <!-- POP UPS -->
 
@@ -350,9 +281,9 @@
 
                 <div data-role="popup" id="jpop">
                     <div data-role="main" class="ui-content">
-                        <img src="img/pitbull.jpg" width="300">
-                        <h3>Pit Bixa porra</h3>
-                        <p>The buttons below are for demonstration purposes only.</p>
+                        <img id="imgDetailPet" src="img/pitbull.jpg" width="300">
+                        <h3 id="titDetailPet">Pit Bixa porra</h3>
+                        <p id="descDetailPet">The buttons below are for demonstration purposes only.</p>
                         <a  style=" background: #ea4f70;" href="#jpopMensagem" data-rel="popup" data-transition="pop" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-heart ui-btn-icon-left ui-btn-inline ui-mini">Quero Adotar</a>
                     </div>
                 </div>
