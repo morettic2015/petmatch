@@ -1,20 +1,6 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=38&email=MALACMA@GMAIL.COM&name=Lam%20Mxrettx&pass=66da9b5f&id=10210293740438879&cep=4004&cpf=02522214525&rua=Jornalista%20CAPIVARA&fone=8888888&complemento=apto123
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ @Morettic.com.br ALL RIGHT RESERVED!
+ https://morettic.com.br
  */
 var app = {
 // Application Constructor
@@ -33,16 +19,7 @@ var app = {
         //Recover profile from previous session
         var mProf = getProfile();
         if (mProf != null) {
-            //alert(perfil.id);
-            //myLoader.show();
-            mProf.img = "img/avatar.png";
-            //alert(JSON.stringify(response));
-            window.location = "#page2";
-            $("#nmEmail").html(mProf.email);
-            $("#nmProfile").html(mProf.name);
-            //alert(resposta.picture.data.url)
-            $("#nmAvatar").attr("src", mProf.picture == undefined ? mProf.img : mProf.picture.data.url);
-            $("#nmAvatar").attr("style", "border-radius: 50%;");
+
             /**
              *
              *  @ Geolocate user device
@@ -102,6 +79,27 @@ var app = {
                 });
             });
             //myLoader.hide();
+
+            /**
+             * UI details
+             * */
+            //alert(perfil.id);
+            //myLoader.show();
+            mProf.img = "img/avatar.png";
+            //alert(JSON.stringify(response));
+            window.location = "#page2";
+            $("#nmEmail").html(mProf.email);
+            $("#nmProfile").html(mProf.name);
+            //alert(resposta.picture.data.url)
+            $("#nmAvatar").attr("src", mProf.picture == undefined ? mProf.img : mProf.picture.data.url);
+            $("#nmAvatar").attr("style", "border-radius: 50%;");
+
+
+
+            /*var infoL = "<h4>Buscar Pets</h4>";
+             infoL += "<small><br>Lat:</b>" + localStorage.getItem("lat") + "</small>";
+             infoL += "<small><br>Lon:</b>" + localStorage.getItem("lon") + "</small>";
+             $("#divInfoSearch").html(infoL);*/
         }
     },
     // Update DOM on a Received Event
@@ -142,6 +140,70 @@ function loginGoogle() {
             }
     );
 }
+var chatPet = null;
+function loadChats() {
+
+    window.location = "#jpopMsgPet";
+}
+
+function searchForPets() {
+    var distance = $("#distance-1").val();
+    var intValOfIt = distance * 40;
+    intValOfIt = intValOfIt > 4000 ? 4000 : intValOfIt;
+    //alert(intValOfIt);
+    loadMainPets(localStorage.getItem("lat"), localStorage.getItem("lon"), intValOfIt);
+}
+function sendMessageToPetOwner() {
+    myLoader.show();
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=45&" +
+            +"from=" +
+            +"&to=" +
+            +"&pet=" +
+            +"&message=";
+    //alert(postTo);
+    $.ajax({
+        url: postTo,
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'CHAT',
+        success: function(data) {
+
+            //  $("#listPetsMain").html('');
+            //  $("#listPetsMain").listview("refresh");
+            // alert(JSON.stringify(data));
+            //alert(localStorage.getItem("myPets"));
+            allPets = data.result;
+            content = '<li data-role="divider">Mensagens (' + allPets.length + ')</li>';
+
+            try {
+                for (i = 0; i < allPets.length; i++) {
+                    mP = allPets[i];
+                    //;
+                    content += '<li><a href="#" onclick="viewPet(' + i + ')"><img src="' + mP.getAvatar
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h2>' + mP.getTitulo
+                            + '</h2><p>' + mP.getDescricao
+                            + '</p> </a></li>';
+                }
+
+            } catch (e) {
+                alert(e);
+            } finally {
+                $("#msgChatBox").html(content);
+                $("#msgChatBox").listview("refresh");
+                myLoader.hide();
+            }
+
+            //myLoader.hide();
+            //alert(JSON.stringify(data));
+        },
+        error: function(err) {
+            loadMainPets(lat, lon, dist);
+            //myLoader.hide();
+            //alert(err);
+        }
+    });
+}
 /**
  * @ Open pop up to set inner content at Adopt Screen (main)
  * */
@@ -168,6 +230,8 @@ function viewPet(petId) {
     desc += allPets[petId].getIdade + "(meses)";
     desc += "</small>";
     $("#descDetailPet").html(desc);
+    chatPet = allPets[petId].id;
+    //alert(JSON.stringify(allPets[petId]));
 
 }
 var allPets = [];
