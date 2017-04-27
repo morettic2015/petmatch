@@ -2,6 +2,16 @@
  @Morettic.com.br ALL RIGHT RESERVED!
  https://morettic.com.br
  */
+var mProf;
+var selectedPet = null;
+var chatPet = null;
+var allPets = [];
+var resposta = null;
+var isEdit = false;
+var petId = 0;
+var avatarUrl = null
+var pets = [];
+
 var app = {
 // Application Constructor
     initialize: function() {
@@ -17,7 +27,7 @@ var app = {
         $("input").textinput();
 
         //Recover profile from previous session
-        var mProf = getProfile();
+        mProf = getProfile();
         if (mProf != null) {
 
             /**
@@ -140,7 +150,7 @@ function loginGoogle() {
             }
     );
 }
-var chatPet = null;
+
 function loadChats() {
 
     window.location = "#jpopMsgPet";
@@ -153,14 +163,27 @@ function searchForPets() {
     //alert(intValOfIt);
     loadMainPets(localStorage.getItem("lat"), localStorage.getItem("lon"), intValOfIt);
 }
+//http://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=45&from=4520495223406592&pet=5200072463613952&message=idTo%20anubis
 function sendMessageToPetOwner() {
+
+
+    if (selectedPet == null)
+        return;
+
+    if ($("#txtMsgChat").val() == "")
+        return;
+
     myLoader.show();
-    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=45&" +
-            +"from=" +
-            +"&to=" +
-            +"&pet=" +
-            +"&message=";
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=45"
+            + "&from=" + mProf.id
+            + "&to=" + selectedPet.getIdOwner
+            + "&pet=" + selectedPet.id
+            + "&message=" + $("#txtMsgChat").val();
+
+
+
     //alert(postTo);
+
     $.ajax({
         url: postTo,
         dataType: "jsonp",
@@ -168,21 +191,24 @@ function sendMessageToPetOwner() {
         jsonp: 'callback',
         jsonpCallback: 'CHAT',
         success: function(data) {
+            alert(JSON.stringify(data));
 
-            //  $("#listPetsMain").html('');
-            //  $("#listPetsMain").listview("refresh");
+            $("#txtMsgChat").val("");
+            $("#msgChatBox").html('');
+            $("#msgChatBox").listview("refresh");
             // alert(JSON.stringify(data));
             //alert(localStorage.getItem("myPets"));
-            allPets = data.result;
-            content = '<li data-role="divider">Mensagens (' + allPets.length + ')</li>';
+
+            mensagens = data.contactList.contatos;
+            content = '<li data-role="divider">Mensagens (' + mensagens.length + ')</li>';
 
             try {
-                for (i = 0; i < allPets.length; i++) {
-                    mP = allPets[i];
+                for (i = 0; i < mensagens.length; i++) {
+                    mP = mensagens[i];
                     //;
-                    content += '<li><a href="#" onclick="viewPet(' + i + ')"><img src="' + mP.getAvatar
-                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h2>' + mP.getTitulo
-                            + '</h2><p>' + mP.getDescricao
+                    content += '<li><a href="#"><img src="' + mP.getPath
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getTimestampChat
+                            + '</h4><p>' + mP.getMsg
                             + '</p> </a></li>';
                 }
 
@@ -195,21 +221,25 @@ function sendMessageToPetOwner() {
             }
 
             //myLoader.hide();
-            //alert(JSON.stringify(data));
+            //alert(JSON.stringify(data));*/
+            myLoader.hide();
         },
         error: function(err) {
-            loadMainPets(lat, lon, dist);
             //myLoader.hide();
             //alert(err);
+            myLoader.hide();
         }
+
     });
 }
 /**
  * @ Open pop up to set inner content at Adopt Screen (main)
  * */
+
 function viewPet(petId) {
     $("#jpop").popup("open");
-    //alert(JSON.stringify(pets[petId]));
+    selectedPet = allPets[petId];
+    //alert(JSON.stringify(allPets[petId]));
     $("#imgDetailPet").attr("src", allPets[petId].getAvatar);
     $("#imgDetailPet").attr("style", "max-height:200px");
     $("#titDetailPet").html(allPets[petId].getTitulo);
@@ -230,11 +260,14 @@ function viewPet(petId) {
     desc += allPets[petId].getIdade + "(meses)";
     desc += "</small>";
     $("#descDetailPet").html(desc);
-    chatPet = allPets[petId].id;
+    //chatPet = allPets[petId].id;
+
+
+    //sendMessageToPetOwner(to, idPet)
     //alert(JSON.stringify(allPets[petId]));
 
 }
-var allPets = [];
+
 function loadMainPets(lat, lon, dist) {
     myLoader.show();
     var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=43&lat=" + lat
@@ -288,7 +321,7 @@ function loadMainPets(lat, lon, dist) {
 /**
  * @Facebook login and settings on Main Screen
  * */
-var resposta = null;
+
 function loginFacebook() {
     var fbLoginSuccess = function(userData) {
         //alert("UserInfo: " + JSON.stringify(userData));
@@ -525,9 +558,7 @@ function getLocation() {
  * https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=41&sexo=1&vacinado=1&id=5678508399394816&idOwner=4520495223406592&castrado=1&idade=36&lat=21&lon=48&tit=LindoP555555555555555555555555555555555555et&desc=%20descricao%20do%20pet&sexo=1&vacinado=2&token=000000000000000000000000000000000000000000000000000&porte=3
  *
  * */
-var isEdit = false;
-var petId = 0;
-var avatarUrl = null
+
 function savePet() {
 
     var perfil = getProfile();
@@ -685,7 +716,7 @@ function removePet() {
 /**
  *  @carrega my pets
  * */
-var pets = [];
+
 function loadMyPets() {
     //$("#myPets").html("");
     //$("#myPets").listview("refresh");
