@@ -199,16 +199,18 @@ function sendMessageToPetOwner() {
             // alert(JSON.stringify(data));
             //alert(localStorage.getItem("myPets"));
 
-            mensagens = data.contactList.contatos;
+            mensagens = data.chats;
+            alert(JSON.stringify(mensagens));
             content = '<li data-role="divider">Mensagens (' + mensagens.length + ')</li>';
 
             try {
                 for (i = 0; i < mensagens.length; i++) {
+
                     mP = mensagens[i];
                     //;
                     content += '<li><a href="#"><img src="' + mP.getPath
-                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getTimestampChat
-                            + '</h4><p>' + mP.getMsg
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getMsg
+                            + '</h4><p>' + mP.getTimestampChat
                             + '</p> </a></li>';
                 }
 
