@@ -32,6 +32,9 @@
         },
         "onesignal-cordova-plugin": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-admob": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     },
     "dependent_plugins": {
@@ -39,6 +42,9 @@
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
         "cordova-plugin-file": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-connectivity-monitor": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     }

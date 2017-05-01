@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-ad-admob"
+    version="1.0.118">
+	
+    <name>Cordova AdMob plugin</name>
+    <description>Show admob banner, interstitial and rewarded video ad</description>
+    <author>Sang Ki Kwon (Cranberrygame)</author>		
+    <license>MIT</license>
+    <keywords>cordova,plugin,ad,admob,monetisation</keywords>
+    <repo>https://github.com/cranberrygame/cordova-plugin-ad-admob</repo>
+    <issue>https://github.com/cranberrygame/cordova-plugin-ad-admob/issues</issue> 	
+	<engines>
+	    <engine name="cordova" version=">=3.0.0" />
+	</engines>
+	
+    <js-module src="www/admob.js" name="admob">
+        <clobbers target="window.admob" />
+    </js-module>
+	
+    <!-- android -->
+    <platform name="android">
+	    <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="AdMobPlugin" >
+                <param name="android-package" value="com.cranberrygame.cordova.plugin.ad.admob.AdMobPlugin"/>
+            </feature>
+        </config-file>
+		
+        <source-file src="src/android/AdMobPlugin.java" target-dir="src/com/cranberrygame/cordova/plugin/ad/admob" />
+        <source-file src="src/android/AdMobOverlap.java" target-dir="src/com/cranberrygame/cordova/plugin/ad/admob" />
+        <source-file src="src/android/AdMobSplit.java" target-dir="src/com/cranberrygame/cordova/plugin/ad/admob" />
+		
+		<!-- dependency -->
+		<dependency id="cordova-plugin-ad-admob-sdk" url="https://github.com/cranberrygame/cordova-plugin-ad-admob-sdk" />
+    </platform>
+
+	<!-- ios -->
+	<platform name="ios">
+		<config-file target="config.xml" parent="/*">
+			<feature name="AdMobPlugin">
+				<param name="ios-package" value="AdMobPlugin" />
+				<param name="onload" value="true" />
+			</feature>
+		</config-file>
+		
+		<header-file src="src/ios/AdMobPlugin.h" />
+		<source-file src="src/ios/AdMobPlugin.m" />
+		<header-file src="src/ios/AdMobOverlap.h" />
+		<source-file src="src/ios/AdMobOverlap.m" />
+		<header-file src="src/ios/AdMobSplit.h" />
+		<source-file src="src/ios/AdMobSplit.m" />
+
+		<!-- dependency -->
+		<dependency id="cordova-plugin-ad-admob-sdk" url="https://github.com/cranberrygame/cordova-plugin-ad-admob-sdk" />
+	</platform>
+	
+    <!-- wp8 -->
+    <platform name="wp8">		
+        <config-file target="config.xml" parent="/*">
+            <feature name="AdMobPlugin">
+                <param name="wp-package" value="AdMobPlugin"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/wp8/AdMobPlugin.cs" />
+        <source-file src="src/wp8/AdMobOverlap.cs" />
+        <source-file src="src/wp8/AdMobSplit.cs" />
+		<framework src="src/wp8/Silverlight.Md5.dll" custom="true" />		
+		
+		<!-- dependency -->
+		<dependency id="cordova-plugin-ad-admob-sdk" url="https://github.com/cranberrygame/cordova-plugin-ad-admob-sdk" />
+    </platform>
+	
+	<!-- windows (wp8.1) --> <!-- not yet supported-->
+<!--	
+    <platform name="windows">
+        <js-module src="src/windows/admobproxy.js">
+			<runs />
+        </js-module>
+-->		
+<!--		
+        <framework src="src/windows/Com.Cranberrygame.Cordova.Plugin.Ad.AdMob/Com.Cranberrygame.Cordova.Plugin.Ad.AdMob.csproj" custom="true" type="projectReference" target="win" />
+-->
+<!--
+		<framework src="src/windows/Com.Cranberrygame.Cordova.Plugin.Ad.AdMob/bin/Debug/Com.Cranberrygame.Cordova.Plugin.Ad.AdMob.winmd" custom="true" target="win" />
+		<framework src="src/wp8/Silverlight.Md5.dll" custom="true" />	
+-->		
+		<!-- dependency -->
+<!--		
+		<dependency id="cordova-plugin-ad-admobsdk" url="https://github.com/cranberrygame/cordova-plugin-ad-admobsdk" />
+    </platform>	
+-->	
+</plugin>

@@ -71,7 +71,7 @@ var app = {
                         + ids.pushToken
                         + "&one="
                         + ids.userId;
-                // alert(postTo);
+                //alert(postTo);
                 $.ajax({
                     url: postTo,
                     dataType: "jsonp",
@@ -110,6 +110,22 @@ var app = {
              infoL += "<small><br>Lat:</b>" + localStorage.getItem("lat") + "</small>";
              infoL += "<small><br>Lon:</b>" + localStorage.getItem("lon") + "</small>";
              $("#divInfoSearch").html(infoL);*/
+            // Set AdMobAds options:
+            admob.setOptions({
+                publisherId: "ca-app-pub-5450650045028162/5222338695"// Required
+                        //interstitialAdId: "ca-app-pub-XXXXXXXXXXXXXXXX/IIIIIIIIII", // Optional
+                        //tappxIdiOS: "/XXXXXXXXX/Pub-XXXX-iOS-IIII", // Optional
+                        // tappxIdAndroid: "/120940746/Pub-17452-Android-9564" // Optional
+                        //tappxShare: 0.5                                        // Optional
+            });
+
+            // Start showing banners (atomatic when autoShowBanner is set to true)
+            admob.createBannerView();
+
+            // Request interstitial (will present automatically when autoShowInterstitial is set to true)
+            /* setInterval(function() {
+             admob.requestInterstitialAd();
+             }, 20000);*/
         }
     },
     // Update DOM on a Received Event
@@ -151,9 +167,204 @@ function loginGoogle() {
     );
 }
 
-function loadChats() {
+function loadPetChatInner(isMine, idPet, idOwner) {
+    alert(isMine);
+    if (isMine) {
+        var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=47&idPet=" + idPet;
+        myLoader.show();
+        $.ajax({
+            url: postTo,
+            dataType: "jsonp",
+            method: "GET",
+            jsonp: 'callback',
+            jsonpCallback: 'CHAT_AVATAR',
+            success: function(data) {
+                //alert(JSON.stringify(data));
 
+                //$("#txtMsgChat").val("");
+                $("#listPetMessages").html('');
+                $("#listPetMessages").listview("refresh");
+                // alert(JSON.stringify(data));
+                //alert(localStorage.getItem("myPets"));
+
+                mensagens = data.result;
+                //alert(JSON.stringify(mensagens));
+                content = '<li data-role="divider">Mensagens (' + mensagens.length + ')</li>';
+
+                try {
+                    for (i = 0; i < mensagens.length; i++) {
+
+                        var mP = mensagens[i];
+                        //;
+                        var pathImageChat;
+
+                        var pathImageChat = mP.getPath.replace("http:", "https:");
+
+
+                        content += '<li><a href="#" onclick=alert("' + mP.mine + '")><img src="' + pathImageChat
+                                + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getNome
+                                + '</h4></a></li>';
+                    }
+
+                } catch (e) {
+                    alert(e);
+                } finally {
+                    $("#listPetMessages").html(content);
+                    $("#listPetMessages").listview("refresh");
+                    myLoader.hide();
+                }
+
+                //myLoader.hide();
+                //alert(JSON.stringify(data));*/
+                myLoader.hide();
+            },
+            error: function(err) {
+                //myLoader.hide();
+                //alert(err);
+                myLoader.hide();
+            }
+
+        });
+    } else {
+
+    }
+
+}
+
+function loadPetChats() {
+    window.location = "#jpopLMensagem";
+
+    //46&idProfile=10210293740438879
+
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=46"
+            + "&idProfile=" + mProf.id;
+
+    myLoader.show();
+    $.ajax({
+        url: postTo,
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'CHAT_LIST',
+        success: function(data) {
+            //alert(JSON.stringify(data));
+
+            //$("#txtMsgChat").val("");
+            $("#listPetMessages").html('');
+            $("#listPetMessages").listview("refresh");
+            // alert(JSON.stringify(data));
+            //alert(localStorage.getItem("myPets"));
+
+            mensagens = data.petMessages;
+            //alert(JSON.stringify(mensagens));
+            content = '<li data-role="divider">Mensagens (' + mensagens.length + ')</li>';
+
+            try {
+                for (i = 0; i < mensagens.length; i++) {
+
+                    var mP = mensagens[i];
+                    //;
+                    var pathImageChat;
+
+                    var pathImageChat = mP.getPath.replace("http:", "https:");
+
+
+                    content += '<li><a href="#" onclick=loadPetChatInner(' + mP.mine + ',"' + mP.getKey + '","' + mP.getIdOwner + '")><img src="' + pathImageChat
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getTitulo
+                            + '</h4></a></li>';
+                }
+
+            } catch (e) {
+                alert(e);
+            } finally {
+                $("#listPetMessages").html(content);
+                $("#listPetMessages").listview("refresh");
+                myLoader.hide();
+            }
+
+            //myLoader.hide();
+            //alert(JSON.stringify(data));*/
+            myLoader.hide();
+        },
+        error: function(err) {
+            //myLoader.hide();
+            //alert(err);
+            myLoader.hide();
+        }
+
+    });
+}
+
+/**
+ * @Load chat window
+ * */
+function loadChats() {
     window.location = "#jpopMsgPet";
+    $("#txtMsgChat").val("");
+    $("#msgChatBox").html('');
+    var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=48"
+            + "&from=" + mProf.id
+            + "&to=" + selectedPet.getIdOwner
+            + "&pet=" + selectedPet.id
+            + "&message=" + $("#txtMsgChat").val();
+
+    myLoader.show();
+    $.ajax({
+        url: postTo,
+        dataType: "jsonp",
+        method: "GET",
+        jsonp: 'callback',
+        jsonpCallback: 'CHAT_MSG',
+        success: function(data) {
+            //alert(JSON.stringify(data));
+
+            $("#txtMsgChat").val("");
+            $("#msgChatBox").html('');
+            $("#msgChatBox").listview("refresh");
+            // alert(JSON.stringify(data));
+            //alert(localStorage.getItem("myPets"));
+
+            mensagens = data.chats;
+            //alert(JSON.stringify(mensagens));
+            content = '<li data-role="divider">Mensagens (' + mensagens.length + ')</li>';
+
+            try {
+                for (i = 0; i < mensagens.length; i++) {
+
+                    mP = mensagens[i];
+                    //;
+                    var pathImageChat;
+
+                    var pathImageChat = mP.getPath.replace("http:", "https:");
+
+
+                    content += '<li><img src="' + pathImageChat
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><p>' + mP.getNome + '</p><h4>' + mP.getMsg
+                            + '</h4><p>' + mP.getTimestampChat
+                            + '</p></li>';
+                }
+
+            } catch (e) {
+                alert(e);
+            } finally {
+                $("#msgChatBox").html(content);
+                $("#msgChatBox").listview("refresh");
+                myLoader.hide();
+            }
+
+            //myLoader.hide();
+            //alert(JSON.stringify(data));*/
+            myLoader.hide();
+        },
+        error: function(err) {
+            //myLoader.hide();
+            //alert(err);
+            myLoader.hide();
+        }
+
+    });
+
+
 }
 
 function searchForPets() {
@@ -200,7 +411,7 @@ function sendMessageToPetOwner() {
             //alert(localStorage.getItem("myPets"));
 
             mensagens = data.chats;
-            alert(JSON.stringify(mensagens));
+            //alert(JSON.stringify(mensagens));
             content = '<li data-role="divider">Mensagens (' + mensagens.length + ')</li>';
 
             try {
@@ -208,10 +419,17 @@ function sendMessageToPetOwner() {
 
                     mP = mensagens[i];
                     //;
-                    content += '<li><a href="#"><img src="' + mP.getPath
-                            + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getMsg
+                    var pathImageChat;
+                    if (mP.getPath == undefined) {
+                        var pathImageChat = 'img/avatar.png';
+                    } else {
+                        var pathImageChat = mP.getPath.replace("http:", "https:");
+                    }
+
+                    content += '<li><img src="' + pathImageChat
+                            + '" style="border-radius: 50%;border-radius:1px" width="180"><p>' + mP.getNome + '</p><h4>' + mP.getMsg
                             + '</h4><p>' + mP.getTimestampChat
-                            + '</p> </a></li>';
+                            + '</p></li>';
                 }
 
             } catch (e) {
@@ -356,6 +574,8 @@ function loginFacebook() {
                                     $("#nmProfile").html(resposta.name);
                                     $("#nmAvatar").attr("src", resposta.picture.data.url);
                                     $("#nmAvatar").attr("style", "border-radius: 50%;");
+                                    alert(JSON.stringify(resposta));
+                                    alert(JSON.stringify(data));
 
                                     localStorage.setItem("profile", JSON.stringify(resposta));
                                 } else {
@@ -500,7 +720,7 @@ function login() {
             } else {
                 alert("Ops...Usuário ou senha inválidos");
             }
-            alert(JSON.stringify(data));
+            //alert(JSON.stringify(data));
         },
         error: function(err) {
             myLoader.hide();

@@ -71,15 +71,8 @@
                 <center><img src="img/logo_pet_b.png" width="100"></center>
             </div>
             <div role="main" class="ui-content">
-                <ul data-role="listview" data-inset="true">
-                    <li data-role="divider">Mensagens</li>
-                    <li>
-                        <a href="#"  onclick="loadChats()">
-                            <img src="img/pitbull.jpg" style="border-radius: 50%;border-radius:1px" width="180">
-                            <h2>Mauro</h2>
-                            <p>asldkjsdlfjsdlfa.</p>
-                        </a>
-                    </li>
+                <ul data-role="listview" data-inset="true" id="listPetMessages">
+
                 </ul>
             </div>
         </div>
@@ -260,7 +253,7 @@
                     <ul data-role="listview">
                         <li><a href="#" onclick="setProfile()">Meu Perfil</a></li>
                         <li><a href="#" onclick="loadAddPet()">Cadastrar Pet</a></li>
-                        <li><a href="#jpopLMensagem">Mensagens</a></li>
+                        <li><a href="#" onclick="loadPetChats()">Adoções</a></li>
                         <li><a href="#jpopPerfil" data-rel="popup" data-transition="pop">Copyright</a></li>
                     </ul>
                 </center>
