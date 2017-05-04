@@ -71,10 +71,47 @@
                 <center><img src="img/logo_pet_b.png" width="100"></center>
             </div>
             <div role="main" class="ui-content">
+                <h3>Mensagens de adoção</h3>
                 <ul data-role="listview" data-inset="true" id="listPetMessages">
+                </ul>
+            </div>
+            <p class="spacerBottom"/>
+        </div>
+        <div  data-role="page" id="jpopChat1">
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <a href="#jpopLMensagem" onclick="stopInterval()" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <center><img src="img/logo_pet_b.png" width="100"></center>
+            </div>
+            <div role="main" class="ui-content">
+                <ul data-role="listview" id="msgChatBoxPop" data-inset="true">
+                </ul>
+                <p>
+                    <textarea name="txtMsgChatPop" id="txtMsgChatPop">
+                    </textarea>
+                </p>
+                <a href="#pageone" onclick="sendMessageToUser()" style=" background: #00a599;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-comment ui-btn-icon-left ui-btn-inline ui-mini">
+                    Enviar
+                </a>
+                <a href="#pageone" id="btConfirmAdopt" style=" background: #3b5999;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">
+                    Confirmar adoção
+                </a>
+            </div>
+            <p class="spacerBottom"/>
+        </div>
+
+
+        <div  data-role="page" id="jpopLMensagemInner">
+            <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
+                <a href="#" onclick="loadPetChats()" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <center><img src="img/logo_pet_b.png" width="100"></center>
+            </div>
+            <div role="main" class="ui-content">
+                <h3>Candidatos para adoção</h3>
+                <ul data-role="listview" data-inset="true" id="listPetMessagesInner">
 
                 </ul>
             </div>
+            <p class="spacerBottom"/>
         </div>
         <!-- pagina perfil -->
 
@@ -203,11 +240,13 @@
             </ul>
             <p class="spacerBottom"/>
         </div>
-        <!-- Página de chat -->
+
+
+        <!-- Página de chat do pet -->
 
         <div  data-role="page"  id="jpopMsgPet">
             <div data-role="header" data-theme="c" data-position="fixed" style="background: #00a599">
-                <a href="#page2" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
+                <a href="#page2" onclick="stopInterval()" class="ui-btn ui-icon-back ui-btn-icon-notext" style=" background: #00a599;">Icon only</a>
                 <center><img src="img/logo_pet_b.png" width="100"></center>
             </div>
 
@@ -222,12 +261,14 @@
                 <textarea name="txtMsgChat" id="txtMsgChat">
                 </textarea>
             </p>
-            <a href="#pageone" onclick="sendMessageToPetOwner()" style=" background: #00a599;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">
+            <a href="#pageone" onclick="sendMessageToPetOwner()" style=" background: #00a599;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-comment ui-btn-icon-left ui-btn-inline ui-mini">
                 Enviar
             </a>
             <p/>
 
             <p class="spacerBottom"/>
+            <!-- Chat interno do pet-->
+
         </div>
 
         <!--
@@ -251,10 +292,10 @@
 
                     <h4 id="nmEmail" style="display: none;visibility: hidden">email@mail.o</h4>
                     <ul data-role="listview">
-                        <li><a href="#" onclick="setProfile()">Meu Perfil</a></li>
-                        <li><a href="#" onclick="loadAddPet()">Cadastrar Pet</a></li>
-                        <li><a href="#" onclick="loadPetChats()">Adoções</a></li>
-                        <li><a href="#jpopPerfil" data-rel="popup" data-transition="pop">Copyright</a></li>
+                        <li><a class="ui-btn ui-btn-icon-left ui-icon-user" href="#" onclick="setProfile()">Meu Perfil</a></li>
+                        <li><a class="ui-btn ui-btn-icon-left ui-icon-plus" href="#" onclick="loadAddPet()">Cadastrar Pet</a></li>
+                        <li><a class="ui-btn ui-btn-icon-left ui-icon-comment" href="#" onclick="loadPetChats()">Adoções</a></li>
+                        <li><a class="ui-btn ui-btn-icon-left ui-icon-info" href="#jpopPerfil" data-rel="popup" data-transition="pop">Ajuda</a></li>
                     </ul>
                 </center>
             </div>
@@ -278,6 +319,8 @@
                         </a>
                     </div>
                 </div>
+                <!-- Página do chat interno-->
+
                 <!-- @PopUp Cadastrar PEt-->
 
                 <div data-role="popup" id="jpop">
@@ -286,7 +329,9 @@
                         <img id="imgDetailPet" src="img/pitbull.jpg" width="300">
                         <h3 id="titDetailPet"></h3>
                         <p id="descDetailPet"></p>
-                        <a  style=" background: #ea4f70;" href="#" onclick="loadChats()" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-heart ui-btn-icon-left ui-btn-inline ui-mini">Quero Adotar</a>
+                        <center>
+                            <a id="btAdotarPetMain" style=" background: #ea4f70;" href="#" onclick="loadChats()" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-heart ui-btn-icon-left ui-btn-inline ui-mini">Adotar</a>
+                        </center>
                     </div>
                 </div>
             </div>
@@ -300,6 +345,9 @@
         <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
         <script type="text/javascript" src="js/jquery-1.5.0.mobile.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/messages.js"></script>
+        <script type="text/javascript" src="js/pet.js"></script>
+        <script type="text/javascript" src="js/profile.js"></script>
     </body>
 
 </html>
