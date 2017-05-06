@@ -89,10 +89,10 @@
                     <textarea name="txtMsgChatPop" id="txtMsgChatPop">
                     </textarea>
                 </p>
-                <a href="#pageone" onclick="sendMessageToUser()" style=" background: #00a599;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-comment ui-btn-icon-left ui-btn-inline ui-mini">
+                <a href="#pageone" id="btSendMessagemTo" onclick="sendMessageToUser()" style=" background: #00a599;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-comment ui-btn-icon-left ui-btn-inline ui-mini">
                     Enviar
                 </a>
-                <a href="#pageone" id="btConfirmAdopt" style=" background: #3b5999;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">
+                <a href="#pageone" id="btConfirmAdopt" onclick="confirmAdopt()" style=" background: #3b5999;" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">
                     Confirmar adoção
                 </a>
             </div>
@@ -220,16 +220,16 @@
             </center>
             <input type="hidden" name="txt-avatar-pet" id="txt-avatar-pet"/>
             <center>
-                <a href="#" id="btn-attatch" onclick="filePicker()" class="ui-btn ui-btn-icon-notext ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-camera"  style="background: #3b5999;">
+                <a href="#" id="btn-attatch" onclick="filePicker()" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-camera ui-btn-icon-left ui-btn-inline ui-mini"  style="background: #3b5999;">
                     Foto
                 </a>
-                <a href="#"  onclick="savePet()" id="savePet" class="ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-plus ui-btn-inline ui-mini"  style=" background: #00a599;">
+                <a href="#"  onclick="savePet()" id="savePet" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-left ui-btn-inline ui-mini"  style=" background: #00a599;">
                     Salvar
                 </a>
-                <a href="#"  onclick="removePet()" id="delPet" class="ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-inline ui-mini"  style=" background: #ea4f70;">
+                <a href="#"  onclick="removePet()" id="delPet" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-left ui-btn-inline ui-mini"  style=" background: #ea4f70;">
                     Excluir
                 </a>
-                <a href="#" id="btn-cancel-pet" onclick="novoPet()"  class="ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-info  ui-btn-inline ui-mini"  style="background: #2ad;">
+                <a href="#" id="btn-cancel-pet" onclick="novoPet()" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini"  style="background: #2ad;">
                     Novo
                 </a>
             </center>

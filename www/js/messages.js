@@ -1,6 +1,10 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
+ *
+ * [{"getIdOwner":"4520495223406592","getKey":"5638276366991360","getPath":"https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=5&blob-key=AMIfv97sht_7FuFh-w0iGV52yMJmbgacJOr7h_FBoE2wmX5lMQbRAgChU__opF5rVJNAjr3fYDvSrMyf0UMhcuWs-FJXDk29-MLzkChMBhAKrCVC3xcuH4TsB0sJT3FIqaTU8FQTV82rUtZGpN7GzUoh3QwyC0xlAiWauY-wUs8wvtccDw4AOac","mine":false,"getTitulo":"BISONHO"},{"getIdOwner":"10210293740438879","getKey":"5069696248315904","getPath":"https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=5&blob-key=AMIfv97kfOPg6o0E3PRdqM3VTGOtMJJWv9SfGAVgCvyahE__R4etp1mfEady6bjNwRfiUaHtqqtCbFtGsxbxlSwVh55RtaaLaNOKee7gWOlc1c2rZ-0D4C7HahudZijoWqizBvwI2qMBB52yZpTPYlMTFpSTRSDqiK6Wi-h--m1fz8jfMFqYtio","mine":false,"getTitulo":"TETA"},{"getIdOwner":"4520495223406592","getKey":"5108871181893632","getPath":"https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=5&blob-key=AMIfv96qRP1N5Dpmsg1IvWKwyeHvN6k7Xlqprs_LXYE_0aIXU3l-6EEP9l8lLliNogWRqusFStfdVYnbGNK6cJ6vy2yeuYHkdaZvc8jGGlg7Z_MyoGDcR0omyX_XHXxDu4lPj6JyM7zs6CGe_swmNcKfblX5o9exUeNKxgwa12WnqO5x22Gt7go","mine":false,"getTitulo":"CADELA NO CIO"}]
+ *
+ *
  * and open the template in the editor.
  */
 
@@ -204,17 +208,53 @@ function setChat(fR, tO, iDPet) {
     //interValChat.push(threadOne);
 }
 function loadPetChatInner12(isMine, idPet, idOwner) {
-    loadPetChatInner(isMine, idPet, idOwner);
+    if (!adpt) {
+        $("#btConfirmAdopt").hide();
+    } else {
+        $("#btConfirmAdopt").show();
+    }
+    loadPetChatInner(isMine, idPet, idOwner, true);
     stopInterval();
 
     funThread = function() {
-        loadPetChatInner(isMine, idPet, idOwner);
+        loadPetChatInner(isMine, idPet, idOwner, false);
     }
 
     threadOne = setInterval(funThread, 10000);
 }
 
-function loadPetChatInner(isMine, idPet, idOwner) {
+function confirmAdopt() {
+    if (confirm("Deseja confirmar a adoção deste pet?")) {
+        var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=49"
+                + "&idPet=" + chatFromTo.p
+                + "&idAdoptedBy=" + chatFromTo.t;
+
+        //alert(postTo);
+        myLoader.show();
+        $.ajax({
+            url: postTo,
+            dataType: "jsonp",
+            method: "GET",
+            jsonp: 'callback',
+            jsonpCallback: 'ADOPT_BY',
+            success: function(data) {
+                alert('Adoção concluída!');
+                //$("#btSendMessagemTo").hide();
+                $("#btConfirmAdopt").hide();
+                myLoader.hide();
+            },
+            error: function(err) {
+                //myLoader.hide();
+                //alert(err);
+                myLoader.hide();
+            }
+
+        });
+    }
+}
+
+
+function loadPetChatInner(isMine, idPet, idOwner, reload) {
     // alert(idPet);
     // alert(idOwner);
     petKeyChat = idPet;
@@ -277,7 +317,9 @@ function loadPetChatInner(isMine, idPet, idOwner) {
         chatFromTo.p = idPet;
 
         var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=48&pet=" + idPet + "&from=" + mProf.id + "&to=" + idOwner;
-        window.location = "#jpopChat1";
+        if (reload) {
+            window.location = "#jpopChat1";
+        }
         myLoader.show();
         $.ajax({
             url: postTo,
@@ -290,7 +332,9 @@ function loadPetChatInner(isMine, idPet, idOwner) {
                 // $("#").css({position: 'fixed', top: '3'});
                 //$("#jpopChat1").popup("open");
                 $("#btConfirmAdopt").hide();
-                $("#txtMsgChatPop").val("");
+                if (reload) {
+                    $("#txtMsgChatPop").val("");
+                }
                 $("#msgChatBoxPop").html('');
                 $("#msgChatBoxPop").listview("refresh");
                 //alert(JSON.stringify(data));
@@ -339,6 +383,7 @@ function loadPetChatInner(isMine, idPet, idOwner) {
 
 }
 
+var adpt = false;
 
 function loadPetChats() {
     window.location = "#jpopLMensagem";
@@ -365,7 +410,7 @@ function loadPetChats() {
             //alert(localStorage.getItem("myPets"));
 
             mensagens = data.petMessages;
-            //alert(JSON.stringify(mensagens));
+            //alert(JSON.stringify(chatFromTo));
             content = '<li data-role="divider">Você tem (' + mensagens.length + ') processos de adoção</li>';
 
             try {
@@ -377,8 +422,10 @@ function loadPetChats() {
 
                     var pathImageChat = mP.getPath.replace("http:", "https:");
 
-
-                    content += '<li><a href="#" onclick=loadPetChatInner12(' + mP.mine + ',"' + mP.getKey + '","' + mP.getIdOwner + '")><img src="' + pathImageChat
+                    var dataTheme = mP.getAdoptedBy == true ? '#f2b5c2' : '#f1f1f1';
+                    adpt = mP.getAdoptedBy;
+                    //alert(adpt);
+                    content += '<li><a style="background-color:' + dataTheme + ';" href="#" onclick=loadPetChatInner12(' + mP.mine + ',"' + mP.getKey + '","' + mP.getIdOwner + '")><img src="' + pathImageChat
                             + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getTitulo
                             + '</h4></a></li>';
                 }

@@ -8,7 +8,7 @@
         PetMatch - Adote um Pet
     </author>
     <content src="index.html" />
-    <!--<preference name="Fullscreen" value="true" />-->
+    <preference name="Fullscreen" value="true" />
     <preference name="Orientation" value="portrait" />
     <access origin="*" />
     <icon src="www/res/icons/android/icon_pet.png" platform="android" />

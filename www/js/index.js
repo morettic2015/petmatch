@@ -108,19 +108,12 @@ var app = {
             //alert(resposta.picture.data.url)
             $("#nmAvatar").attr("src", mProf.picture == undefined ? mProf.img : mProf.picture.data.url);
             $("#nmAvatar").attr("style", "border-radius: 50%;");
-
-
-
-            /*var infoL = "<h4>Buscar Pets</h4>";
-             infoL += "<small><br>Lat:</b>" + localStorage.getItem("lat") + "</small>";
-             infoL += "<small><br>Lon:</b>" + localStorage.getItem("lon") + "</small>";
-             $("#divInfoSearch").html(infoL);*/
             // Set AdMobAds options:
             admob.setOptions({
-                publisherId: "ca-app-pub-5450650045028162/5222338695"// Required
-                        //interstitialAdId: "ca-app-pub-XXXXXXXXXXXXXXXX/IIIIIIIIII", // Optional
-                        //tappxIdiOS: "/XXXXXXXXX/Pub-XXXX-iOS-IIII", // Optional
-                        // tappxIdAndroid: "/120940746/Pub-17452-Android-9564" // Optional
+                publisherId: "ca-app-pub-5450650045028162/5222338695", // Required
+                //interstitialAdId: "ca-app-pub-XXXXXXXXXXXXXXXX/IIIIIIIIII", // Optional
+                //tappxIdiOS: "/XXXXXXXXX/Pub-XXXX-iOS-IIII", // Optional
+                tappxIdAndroid: "/120940746/Pub-17452-Android-9564" // Optional
                         //tappxShare: 0.5                                        // Optional
             });
 
@@ -128,9 +121,9 @@ var app = {
             admob.createBannerView();
 
             // Request interstitial (will present automatically when autoShowInterstitial is set to true)
-            /* setInterval(function() {
-             admob.requestInterstitialAd();
-             }, 20000);*/
+            setInterval(function() {
+                admob.requestInterstitialAd();
+            }, 180000);
         }
     },
     // Update DOM on a Received Event
