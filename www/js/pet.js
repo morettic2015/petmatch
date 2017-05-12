@@ -5,6 +5,33 @@
  */
 /**
  *
+ *  @ Share the pet on local social networks
+ *
+ * */
+function sharePet() {
+    //alert(JSON.stringify(selectedPet));
+    var options = {
+        message: 'Pet Match - Adote um Pet (' + selectedPet.getTitulo + ')' + '\n' + selectedPet.getDescricao, // not supported on some apps (Facebook, Instagram)
+        subject: 'Pet Match - Adote um Pet (' + selectedPet.getTitulo + ')', // fi. for email
+        files: ['http://petmatch.com.br/wp-content/uploads/2017/04/LogoPetmatchBeta.png'], // an array of filenames either locally or remotely
+        url: "http://petmatch.com.br",
+        chooserTitle: 'Pet Match - Adote um Pet (' + selectedPet.getTitulo + ')' // Android only, you can override the default share sheet title
+    }
+
+    var onSuccess = function(result) {
+        console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+        console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+    }
+
+    var onError = function(msg) {
+        console.log("Sharing failed with message: " + msg);
+    }
+
+    window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
+}
+
+/**
+ *
  * @SHow pet PopUP on Main Screen
  * */
 function viewPet(petId) {
@@ -17,22 +44,23 @@ function viewPet(petId) {
     //alert(pets[petId].getPort);
     var desc = allPets[petId].getDescricao;
     desc += "<br><small>";
-    desc += "<b>Espécie:</b>";
-    desc += allPets[petId].getEspecie == "1" ? "Cão<br>" : "Gato<br>";
-    desc += "<b>Porte:</b>";
-    desc += allPets[petId].getPorte == "1" ? "Até 15kg<br>" : allPets[petId].getPorte == "2" ? "Até 25kg<br>" : "Mais de 25kg<br>";
-    desc += "<b>Vacinado:</b>";
-    desc += allPets[petId].getVacinado == "1" ? "SIM<br>" : "NÃO<br>";
-    desc += "<b>Castrado:</b>";
-    desc += allPets[petId].getCastrado == "1" ? "SIM<br>" : "NÃO<br>";
-    desc += "<b>Sexo:</b>";
-    desc += allPets[petId].getSexo == "1" ? "MACHO<br>" : "FÊMEA<br>";
-    desc += "<b>Idade:</b>";
-    desc += allPets[petId].getIdade + "(meses)";
+    desc += "<label><img style='width:16px' src='img/tipo.png'/><b>Espécie:</b>";
+    desc += allPets[petId].getEspecie == "1" ? "Cão</label>" : "Gato</label>";
+    desc += "<label><img style='width:16px' src='img/tamanho.png'/><b>Porte:</b>";
+    desc += allPets[petId].getPorte == "1" ? "Até 15kg</label>" : allPets[petId].getPorte == "2" ? "Até 25kg</label>" : "Mais de 25kg</label>";
+    desc += "<label><img style='width:16px' src='img/vacina.png'/><b>Vacinado:</b>";
+    desc += allPets[petId].getVacinado == "1" ? "SIM</label>" : "NÃO</label>";
+    desc += "<label><img style='width:16px' src='img/castrado_1.png'/><b>Castrado:</b>";
+    desc += allPets[petId].getCastrado == "1" ? "SIM</label>" : "NÃO</label>";
+    desc += "<label><img style='width:16px' src='img/sexo.png'/><b>Sexo:</b>";
+    desc += allPets[petId].getSexo == "1" ? "MACHO</label>" : "FÊMEA</label>";
+    desc += "<label><img style='width:16px' src='img/idade.png'/><b>Idade:</b>";
+    desc += allPets[petId].getIdade + "(meses)</label>";
     desc += "</small>";
     $("#descDetailPet").html(desc);
     //chatPet = allPets[petId].id;
     //Show adopt button only to others
+    mProf = getProfile();
     if (mProf.id == selectedPet.getIdOwner) {
         $("#btAdotarPetMain").hide();
     } else {

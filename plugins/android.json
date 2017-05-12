@@ -10,11 +10,6 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
-        "cordova-plugin-facebook4": {
-            "APP_ID": "435098223494007",
-            "APP_NAME": "petmatchfinder",
-            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
-        },
         "com.megster.cordova.FileChooser": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
@@ -35,6 +30,20 @@
         },
         "cordova-admob": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-plugin-facebook4": {
+            "APP_ID": "435098223494007",
+            "APP_NAME": "petmatchfinder",
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-plugin-x-socialsharing": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-plugin-android-permissions": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "cordova-plugin-googleplus": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     },
     "dependent_plugins": {
@@ -45,6 +54,9 @@
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         },
         "cordova-connectivity-monitor": {
+            "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
+        },
+        "es6-promise-plugin": {
             "PACKAGE_NAME": "br.com.morettic.petmatch.Adopt"
         }
     }

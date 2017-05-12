@@ -103,6 +103,14 @@ function loadChatsAbstract(from, to, pet, txt, div, janela, reload) {
                 $(div).html('');
                 $(div).listview("refresh");
             }
+
+            $("#btConfirmAdopt").show();
+            //alert(isAdotado);
+            if (isAdotado == "true") {
+                $("#btConfirmAdopt").hide();
+                $('#btConfirmAdopt').attr("disabled", "disabled");
+            }
+
             // alert(JSON.stringify(data));
             //alert(localStorage.getItem("myPets"));
 
@@ -132,6 +140,7 @@ function loadChatsAbstract(from, to, pet, txt, div, janela, reload) {
                 $(div).html(content);
                 $(div).listview("refresh");
                 myLoader.hide();
+
             }
 
             //myLoader.hide();
@@ -163,6 +172,7 @@ function loadChatsAbstract(from, to, pet, txt, div, janela, reload) {
 var threadOne = null;
 var funThread = null;
 function loadChats() {
+    mProf = getProfile();
     origem = 1;
     loadChatsAbstract(mProf.id, selectedPet.getIdOwner, selectedPet.id, "#txtMsgChat", "#msgChatBox", "#jpopMsgPet", true);
     stopInterval();
@@ -178,7 +188,7 @@ function loadChats() {
 }
 function sendMessageToPetOwner() {
 
-
+    mProf = getProfile();
     if (selectedPet == null)
         return;
 
@@ -194,9 +204,10 @@ function setChat(fR, tO, iDPet) {
     petKeyChat = iDPet;
     fFrom = fR;
     tTO = tO;
+    mProf = getProfile();
     //alert(fFrom + '-' + mProf.id);
     loadChatsAbstract(mProf.id, fR, petKeyChat, "#txtMsgChatPop", "#msgChatBoxPop", "#jpopChat1", true);
-
+    //alert(isAdotado);
     stopInterval();
 
     funThread = function() {
@@ -207,12 +218,11 @@ function setChat(fR, tO, iDPet) {
 
     //interValChat.push(threadOne);
 }
-function loadPetChatInner12(isMine, idPet, idOwner) {
-    if (!adpt) {
-        $("#btConfirmAdopt").hide();
-    } else {
-        $("#btConfirmAdopt").show();
-    }
+var isAdotado = false;
+
+function loadPetChatInner12(isMine, idPet, idOwner, adopted) {
+    isAdotado = adopted;
+
     loadPetChatInner(isMine, idPet, idOwner, true);
     stopInterval();
 
@@ -273,6 +283,11 @@ function loadPetChatInner(isMine, idPet, idOwner, reload) {
             success: function(data) {
                 //alert(JSON.stringify(data));
                 $("#btConfirmAdopt").show();
+                //alert(isAdotado);
+                if (isAdotado == true) {
+                    $("#btConfirmAdopt").hide();
+                    $('#btConfirmAdopt').attr("disabled", "disabled");
+                }
                 mensagens = data.result;
                 //alert(JSON.stringify(mensagens));
                 content = '<li data-role="divider">Pretendentes para adoção (' + mensagens.length + ')</li>';
@@ -312,6 +327,7 @@ function loadPetChatInner(isMine, idPet, idOwner, reload) {
 
         });
     } else {
+        mProf = getProfile();
         chatFromTo.f = mProf.id;
         chatFromTo.t = idOwner;
         chatFromTo.p = idPet;
@@ -383,13 +399,12 @@ function loadPetChatInner(isMine, idPet, idOwner, reload) {
 
 }
 
-var adpt = false;
 
 function loadPetChats() {
     window.location = "#jpopLMensagem";
 
     //46&idProfile=10210293740438879
-
+    var mProf = getProfile();
     var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=46"
             + "&idProfile=" + mProf.id;
 
@@ -415,7 +430,7 @@ function loadPetChats() {
 
             try {
                 for (i = 0; i < mensagens.length; i++) {
-
+                    //alert(JSON.stringify(mensagens[i]));
                     var mP = mensagens[i];
                     //;
                     var pathImageChat;
@@ -423,9 +438,8 @@ function loadPetChats() {
                     var pathImageChat = mP.getPath.replace("http:", "https:");
 
                     var dataTheme = mP.getAdoptedBy == true ? '#f2b5c2' : '#f1f1f1';
-                    adpt = mP.getAdoptedBy;
-                    //alert(adpt);
-                    content += '<li><a style="background-color:' + dataTheme + ';" href="#" onclick=loadPetChatInner12(' + mP.mine + ',"' + mP.getKey + '","' + mP.getIdOwner + '")><img src="' + pathImageChat
+
+                    content += '<li><a style="background-color:' + dataTheme + ';" href="#" onclick=loadPetChatInner12(' + mP.mine + ',"' + mP.getKey + '","' + mP.getIdOwner + '","' + mP.getAdoptedBy + '")><img src="' + pathImageChat
                             + '" style="border-radius: 50%;border-radius:1px" width="180"><h4>' + mP.getTitulo
                             + '</h4></a></li>';
                 }

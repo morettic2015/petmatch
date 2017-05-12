@@ -28,32 +28,14 @@ var app = {
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
-
+        //Init permissions!
+        initPermissions();
         $("input").textinput();
 
         //Recover profile from previous session
         mProf = getProfile();
         if (mProf != null) {
 
-            /**
-             *
-             *  @ Geolocate user device
-             *  @ Save lat lon when open APP
-             * */
-
-            //INit geolocation
-
-            navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        localStorage.setItem("lat", position.coords.latitude);
-                        localStorage.setItem("lon", position.coords.longitude);
-                        loadMainPets(position.coords.latitude, position.coords.longitude, 4000);
-                    },
-                    function(error) {
-                        alert(error);
-                        //alert(JSON.stringify(error));
-                    }
-            );
 
             /**
              * @Push Notifications enabled
@@ -110,10 +92,10 @@ var app = {
             $("#nmAvatar").attr("style", "border-radius: 50%;");
             // Set AdMobAds options:
             admob.setOptions({
-                publisherId: "ca-app-pub-5450650045028162/5222338695", // Required
-                //interstitialAdId: "ca-app-pub-XXXXXXXXXXXXXXXX/IIIIIIIIII", // Optional
-                //tappxIdiOS: "/XXXXXXXXX/Pub-XXXX-iOS-IIII", // Optional
-                tappxIdAndroid: "/120940746/Pub-17452-Android-9564" // Optional
+                publisherId: "ca-app-pub-5450650045028162/5222338695" // Required
+                        //interstitialAdId: "ca-app-pub-XXXXXXXXXXXXXXXX/IIIIIIIIII", // Optional
+                        //tappxIdiOS: "/XXXXXXXXX/Pub-XXXX-iOS-IIII", // Optional
+                        //tappxIdAndroid: "/120940746/Pub-17452-Android-9564" // Optional
                         //tappxShare: 0.5                                        // Optional
             });
 
@@ -124,6 +106,16 @@ var app = {
             setInterval(function() {
                 admob.requestInterstitialAd();
             }, 180000);
+
+            /**
+             *
+             *  @ Geolocate user device
+             *  @ Save lat lon when open APP
+             * */
+
+            //INit geolocation
+            initMainListShow();
+
         }
     },
     // Update DOM on a Received Event
@@ -139,6 +131,22 @@ var app = {
     }
 };
 app.initialize();
+
+//Get gps location and search!
+function initMainListShow() {
+    navigator.geolocation.getCurrentPosition(
+            function(position) {
+                localStorage.setItem("lat", position.coords.latitude);
+                localStorage.setItem("lon", position.coords.longitude);
+                loadMainPets(position.coords.latitude, position.coords.longitude, 4000);
+            },
+            function(error) {
+                alert(error);
+                //alert(JSON.stringify(error));
+            }
+    );
+}
+
 
 function filePicker() {
     /*fileChooser.open(function(uri) {
@@ -213,3 +221,7 @@ var Loader = function() {
 }
 
 var myLoader = new Loader();
+
+window.onerror = function(e) {
+    alert(JSON.stringify(e));
+}

@@ -6,28 +6,71 @@
 
 
 function loginGoogle() {
-    window.plugins.googleplus.login(
-            {
-                scopes: 'profile email', // optional, space-separated(!) list of scopes, If not included or empty, defaults to 'profile email'.
-                webClientId: '302835253273-fqb091vas7jtm62h1cbi8slib42brtpr.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
-                offline: true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+    window.plugins.googleplus.login({
+        scopes: 'profile email', // optional, space-separated(!) list of scopes, If not included or empty, defaults to 'profile email'.
+        webClientId: '302835253273-hb7cdnpbsq49p10h0d2jivghc3k66lgt.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+        offline: true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+    }, function(obj) {
+        var mProf = obj;
+        mProf.name = obj.displayName;
+        mProf.img = obj.imageUrl;
+        //alert(JSON.stringify(obj)); // do something useful instead of alerting
+
+        myLoader.show();
+        var postTo = "https://gaeloginendpoint.appspot.com/infosegcontroller.exec?action=37&email="
+                + mProf.email
+                + "&name="
+                + encodeURI(mProf.displayName)
+                + "&id="
+                + mProf.userId
+                + "&gmail="
+                + encodeURI(mProf.imageUrl)
+        $.ajax({
+            url: postTo,
+            dataType: "jsonp",
+            method: "GET",
+            jsonp: 'callback',
+            jsonpCallback: 'SIGNIN',
+            success: function(data) {
+                if (data.in) {
+                    //resposta = {};
+                    window.location = "#page2";
+                    $("#nmEmail").html(mProf.email);
+                    $("#nmProfile").html(mProf.displayName);
+                    $("#nmAvatar").attr("src", mProf.imageUrl);
+                    $("#nmAvatar").attr("style", "border-radius: 50%;");
+                    //resposta.id = data.id;
+                    try {
+                        mProf.id = data.id;
+                        //obj.name = data.new;
+                        //obj.email = data.new;
+                        mProf.new = data.new;
+                        mProf.cep = data.cep == undefined ? "" : data.cep;
+                        mProf.rua = data.rua == undefined ? "" : data.cep;
+                        mProf.fone = data.fone == undefined ? "" : data.cep;
+                        mProf.doc = data.cpf == undefined ? "" : data.cpf;
+                        mProf.comp = data.complemento == undefined ? "" : data.complemento;
+                        //alert(JSON.stringify(mProf)); // do some
+                    } catch (e) {
+                        alert(e.msg);
+                    } finally {
+                        localStorage.setItem("profile", JSON.stringify(obj));
+                        initMainListShow();
+                    }
+                } else {
+                    alert("Ops...Usuário ou senha inválidos");
+                }
+                myLoader.hide();
+                //alert(JSON.stringify(data));
             },
-    function(obj) {
-        alert(JSON.stringify(obj)); // do something useful instead of alerting
-        /* contains:
-         obj.email          // 'eddyverbruggen@gmail.com'
-         obj.userId         // user id
-         obj.displayName    // 'Eddy Verbruggen'
-         obj.familyName     // 'Verbruggen'
-         obj.givenName      // 'Eddy'
-         obj.imageUrl       // 'http://link-to-my-profilepic.google.com'
-         obj.idToken        // idToken that can be exchanged to verify user identity.
-         obj.serverAuthCode // Auth code that can be exchanged for an access token and refresh token for offline access
-         */
-    },
-            function(msg) {
-                alert('error: ' + msg);
+            error: function(err) {
+                myLoader.hide();
+                alert(JSON.stringify(err));
             }
+        });
+    }, function(msg) {
+        alert('error: ' + msg);
+    }
     );
 }
 
@@ -38,6 +81,7 @@ function setProfile() {
     //alert('LOL')
     window.location = "#jpopPerfil";
     resposta = getProfile();
+    //alert(JSON.stringify(resposta));
     $("#txt-nome").val(resposta.name);
     $("#txt-email1").val(resposta.email);
     $("#txt-fone").val(resposta.fone);
@@ -139,6 +183,8 @@ function login() {
                 resposta.name = data.name;
                 resposta.email = data.email;
                 resposta.url = "img/avatar.png";
+                localStorage.setItem("profile", JSON.stringify(resposta));
+
                 window.location = "#page2";
 
                 $("#nmEmail").html(resposta.email);
@@ -147,10 +193,11 @@ function login() {
                 $("#nmAvatar").attr("src", resposta.url);
                 $("#nmAvatar").attr("style", "border-radius: 50%;");
 
-                localStorage.setItem("profile", JSON.stringify(resposta));
+
             } else {
                 alert("Ops...Usuário ou senha inválidos");
             }
+            initMainListShow();
             //alert(JSON.stringify(data));
         },
         error: function(err) {
@@ -195,10 +242,23 @@ function loginFacebook() {
                                     $("#nmProfile").html(resposta.name);
                                     $("#nmAvatar").attr("src", resposta.picture.data.url);
                                     $("#nmAvatar").attr("style", "border-radius: 50%;");
-                                    alert(JSON.stringify(resposta));
-                                    alert(JSON.stringify(data));
+                                    resposta.id = data.id;
+                                    try {
+                                        resposta.new = data.new;
+                                        resposta.cep = data.cep;
+                                        resposta.rua = data.rua;
+                                        resposta.fone = data.fone;
+                                        resposta.doc = data.cpf;
+                                        resposta.comp = data.complemento;
+
+                                    } catch (e) {
+
+                                    }
+                                    //alert(JSON.stringify(resposta));
+                                    //alert(JSON.stringify(data));
 
                                     localStorage.setItem("profile", JSON.stringify(resposta));
+                                    initMainListShow();
                                 } else {
                                     alert("Ops...Usuário ou senha inválidos");
                                 }
@@ -207,7 +267,7 @@ function loginFacebook() {
                             },
                             error: function(err) {
                                 myLoader.hide();
-                                alert(err);
+                                alert(JSON.stringify(err));
                             }
                         });
 
